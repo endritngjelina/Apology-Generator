@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apology Generator Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .tone-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .tone-option {
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .tone-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tone-option.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .urgency-slider {
+            margin-top: 10px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e1e5e9;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .urgency-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .output-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .letter-preview {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 30px;
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            min-height: 400px;
+            white-space: pre-wrap;
+            position: relative;
+        }
+
+        .letter-preview.formal {
+            font-family: 'Times New Roman', serif;
+            background: linear-gradient(145deg, #f8f9fa, #ffffff);
+        }
+
+        .letter-preview.funny {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(145deg, #fff3cd, #ffffff);
+        }
+
+        .letter-preview.passive-aggressive {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(145deg, #f8d7da, #ffffff);
+        }
+
+        .letter-preview.heartfelt {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(145deg, #d1ecf1, #ffffff);
+        }
+
+        .letter-preview.professional {
+            font-family: 'Calibri', sans-serif;
+            background: linear-gradient(145deg, #e2e3e5, #ffffff);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-copy {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-copy:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+
+        .btn-download {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #138496;
+            transform: translateY(-1px);
+        }
+
+        .btn-share {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-share:hover {
+            background: #e0a800;
+            transform: translateY(-1px);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .tone-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .feature-highlight {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .advanced-options {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎭 Apology Generator Pro</h1>
+            <p>Craft the perfect apology for any situation with AI-powered precision</p>
+        </div>
+
+        <div class="main-content">
+            <div class="form-section">
+                <div class="feature-highlight">
+                    <h3>✨ Professional-Grade Apology Crafting</h3>
+                    <p>Advanced algorithms meet human empathy</p>
+                </div>
+
+                <form id="apologyForm">
+                    <div class="form-group">
+                        <label for="recipient">To Whom:</label>
+                        <input type="text" id="recipient" class="form-control" placeholder="e.g., Sarah, My Team, Mom" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mistake">What Happened:</label>
+                        <textarea id="mistake" class="form-control" placeholder="Describe the situation that requires an apology..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Apology Tone:</label>
+                        <div class="tone-grid">
+                            <div class="tone-option active" data-tone="formal">📋 Formal</div>
+                            <div class="tone-option" data-tone="funny">😄 Humorous</div>
+                            <div class="tone-option" data-tone="passive-aggressive">😏 Passive-Aggressive</div>
+                            <div class="tone-option" data-tone="heartfelt">💝 Heartfelt</div>
+                            <div class="tone-option" data-tone="professional">💼 Professional</div>
+                            <div class="tone-option" data-tone="casual">😊 Casual</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="urgency">Urgency Level: <span id="urgencyValue">5</span>/10</label>
+                        <div class="urgency-slider">
+                            <input type="range" id="urgency" class="slider" min="1" max="10" value="5">
+                            <div class="urgency-labels">
+                                <span>Chill</span>
+                                <span>Moderate</span>
+                                <span>URGENT!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="relationship">Your Relationship:</label>
+                        <select id="relationship" class="form-control">
+                            <option value="friend">Friend</option>
+                            <option value="colleague">Colleague</option>
+                            <option value="family">Family Member</option>
+                            <option value="boss">Boss/Superior</option>
+                            <option value="client">Client/Customer</option>
+                            <option value="romantic">Romantic Partner</option>
+                            <option value="stranger">Stranger</option>
+                        </select>
+                    </div>
+
+                    <div class="advanced-options">
+                        <h4>🔧 Advanced Options</h4>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="includeGift">
+                                <label for="includeGift">Suggest peace offering</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="includeQuote">
+                                <label for="includeQuote">Add inspirational quote</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="includeAction">
+                                <label for="includeAction">Include action plan</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="includeTimeline">
+                                <label for="includeTimeline">Add timeline for resolution</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="generate-btn">🚀 Generate Apology</button>
+                </form>
+            </div>
+
+            <div class="output-section">
+                <h3>📄 Your Personalized Apology</h3>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Crafting your perfect apology...</p>
+                </div>
+
+                <div id="letterPreview" class="letter-preview">
+                    <p style="text-align: center; color: #666; margin-top: 150px;">
+                        👈 Fill out the form to generate your personalized apology letter
+                    </p>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-copy" onclick="copyToClipboard()">📋 Copy Text</button>
+                    <button class="btn btn-download" onclick="downloadLetter()">💾 Download PDF</button>
+                    <button class="btn btn-share" onclick="shareApology()">📤 Share</button>
+                </div>
+
+                <div class="stats" id="stats" style="display: none;">
+                    <div class="stat-item">
+                        <div class="stat-value" id="wordCount">0</div>
+                        <div class="stat-label">Words</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="readingTime">0</div>
+                        <div class="stat-label">Min Read</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="sincerity">-</div>
+                        <div class="stat-label">Sincerity Score</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        let currentTone = 'formal';
+        let generatedApology = '';
+
+        // Initialize event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tone selection
+            document.querySelectorAll('.tone-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.tone-option').forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                    currentTone = this.dataset.tone;
+                });
+            });
+
+            // Urgency slider
+            document.getElementById('urgency').addEventListener('input', function() {
+                document.getElementById('urgencyValue').textContent = this.value;
+            });
+
+            // Form submission
+            document.getElementById('apologyForm').addEventListener('submit', generateApology);
+        });
+
+        function generateApology(e) {
+            e.preventDefault();
+            
+            const recipient = document.getElementById('recipient').value;
+            const mistake = document.getElementById('mistake').value;
+            const urgency = document.getElementById('urgency').value;
+            const relationship = document.getElementById('relationship').value;
+            
+            const includeGift = document.getElementById('includeGift').checked;
+            const includeQuote = document.getElementById('includeQuote').checked;
+            const includeAction = document.getElementById('includeAction').checked;
+            const includeTimeline = document.getElementById('includeTimeline').checked;
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('letterPreview').style.display = 'none';
+
+            setTimeout(() => {
+                const apology = craftApology({
+                    recipient, mistake, tone: currentTone, urgency, relationship,
+                    includeGift, includeQuote, includeAction, includeTimeline
+                });
+
+                displayApology(apology);
+                
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('letterPreview').style.display = 'block';
+                
+                updateStats(apology);
+            }, 1500);
+        }
+
+        function craftApology(params) {
+            const { recipient, mistake, tone, urgency, relationship, includeGift, includeQuote, includeAction, includeTimeline } = params;
+            
+            const templates = {
+                formal: {
+                    greeting: `Dear ${recipient},`,
+                    opening: `I am writing to formally apologize for ${mistake.toLowerCase()}.`,
+                    body: `I take full responsibility for my actions and understand the impact they may have had. This was not reflective of my usual standards, and I sincerely regret any inconvenience caused.`,
+                    closing: `I hope you will accept my sincere apologies and allow me the opportunity to make amends.`,
+                    signature: `Respectfully yours,\n[Your Name]`
+                },
+                funny: {
+                    greeting: `Hey ${recipient}! 😅`,
+                    opening: `So... about that whole ${mistake.toLowerCase()} thing...`,
+                    body: `I know I messed up worse than a GPS in a tunnel. My bad! 🤦‍♀️ I promise I'm not usually this much of a disaster (only on days ending in 'y').`,
+                    closing: `Please forgive me? I'll even throw in some awkward finger guns 👉👉 as a peace offering!`,
+                    signature: `Your apologetic goofball,\n[Your Name]`
+                },
+                'passive-aggressive': {
+                    greeting: `Hi ${recipient},`,
+                    opening: `I suppose I should apologize for ${mistake.toLowerCase()}.`,
+                    body: `While I'm sorry that you were upset by the situation, I want you to know that it certainly wasn't my intention. I'm sure we can all learn something from this experience.`,
+                    closing: `I hope this clears things up and we can move forward... productively.`,
+                    signature: `Best regards,\n[Your Name]`
+                },
+                heartfelt: {
+                    greeting: `My dear ${recipient},`,
+                    opening: `My heart is heavy as I write this apology for ${mistake.toLowerCase()}.`,
+                    body: `I've been reflecting deeply on my actions, and I realize how much pain I may have caused you. You mean so much to me, and knowing that I've hurt you is devastating. I want you to know that I'm committed to doing better and earning back your trust.`,
+                    closing: `Please know that you are cherished, and I hope you can find it in your heart to forgive me.`,
+                    signature: `With all my love,\n[Your Name]`
+                },
+                professional: {
+                    greeting: `Dear ${recipient},`,
+                    opening: `I would like to address the recent incident regarding ${mistake.toLowerCase()}.`,
+                    body: `I acknowledge that my actions fell short of the professional standards expected in our ${relationship} relationship. I have identified the root causes and am implementing corrective measures to prevent recurrence.`,
+                    closing: `I value our professional relationship and am committed to rebuilding your confidence in my capabilities.`,
+                    signature: `Sincerely,\n[Your Name]`
+                },
+                casual: {
+                    greeting: `Hey ${recipient},`,
+                    opening: `I wanted to reach out about ${mistake.toLowerCase()}.`,
+                    body: `I know I screwed up, and I feel really bad about it. That's totally on me, and I want to make it right. You're important to me, and I hate that I let you down.`,
+                    closing: `Hope we can work through this together. Thanks for being patient with me.`,
+                    signature: `Talk soon,\n[Your Name]`
+                }
+            };
+
+            let apology = templates[tone];
+            let letter = `${apology.greeting}\n\n${apology.opening}\n\n${apology.body}`;
+
+            // Add urgency-based modifications
+            if (urgency > 7) {
+                letter += `\n\nI understand the urgency of this matter and am prepared to discuss this at your earliest convenience.`;
+            }
+
+            // Add optional elements
+            if (includeAction) {
+                letter += `\n\nMoving forward, I will: implement better communication protocols, establish regular check-ins, and create accountability measures to prevent similar issues.`;
+            }
+
+            if (includeTimeline) {
+                letter += `\n\nI propose to address this within the next 48-72 hours and provide you with a progress update by [specific date].`;
+            }
+
+            if (includeGift && tone !== 'passive-aggressive') {
+                const gifts = {
+                    friend: 'coffee date',
+                    family: 'home-cooked meal',
+                    colleague: 'lunch meeting',
+                    boss: 'detailed improvement plan',
+                    client: 'complimentary service',
+                    romantic: 'thoughtful gesture',
+                    stranger: 'small token of appreciation'
+                };
+                letter += `\n\nAs a gesture of goodwill, I'd like to offer ${gifts[relationship] || 'a small token of my sincerity'}.`;
+            }
+
+            if (includeQuote) {
+                const quotes = [
+                    '"The best apology is changed behavior." - Unknown',
+                    '"Everyone makes mistakes. The wise are not people who never make mistakes, but those who forgive themselves and learn from their mistakes." - Ajahn Chah',
+                    '"An apology is the superglue of life. It can repair just about anything." - Lynn Johnston'
+                ];
+                letter += `\n\n${quotes[Math.floor(Math.random() * quotes.length)]}`;
+            }
+
+            letter += `\n\n${apology.closing}\n\n${apology.signature}`;
+            
+            return letter;
+        }
+
+        function displayApology(apology) {
+            const preview = document.getElementById('letterPreview');
+            preview.textContent = apology;
+            preview.className = `letter-preview ${currentTone}`;
+            generatedApology = apology;
+            document.getElementById('stats').style.display = 'grid';
+        }
+
+        function updateStats(text) {
+            const words = text.split(/\s+/).length;
+            const readingTime = Math.ceil(words / 200);
+            const sincerity = calculateSincerity(text);
+            
+            document.getElementById('wordCount').textContent = words;
+            document.getElementById('readingTime').textContent = readingTime;
+            document.getElementById('sincerity').textContent = `${sincerity}/10`;
+        }
+
+        function calculateSincerity(text) {
+            const positiveWords = ['sorry', 'apologize', 'regret', 'mistake', 'understand', 'responsibility', 'forgive'];
+            const words = text.toLowerCase().split(/\s+/);
+            const matches = words.filter(word => positiveWords.some(pw => word.includes(pw))).length;
+            return Math.min(Math.round((matches / words.length) * 100) + 3, 10);
+        }
+
+        async function copyToClipboard() {
+            try {
+                await navigator.clipboard.writeText(generatedApology);
+                showToast('✅ Copied to clipboard!', 'success');
+            } catch (err) {
+                showToast('❌ Failed to copy', 'error');
+            }
+        }
+
+        function downloadLetter() {
+            const element = document.createElement('a');
+            const file = new Blob([generatedApology], {type: 'text/plain'});
+            element.href = URL.createObjectURL(file);
+            element.download = 'apology-letter.txt';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            showToast('📥 Download started!', 'success');
+        }
+
+        async function shareApology() {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'My Apology Letter',
+                        text: generatedApology
+                    });
+                    showToast('📤 Shared successfully!', 'success');
+                } catch (err) {
+                    copyToClipboard();
+                }
+            } else {
+                copyToClipboard();
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
