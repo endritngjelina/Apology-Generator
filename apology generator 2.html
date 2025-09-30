@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apology Generator Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 107, 107, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            box-shadow: 
+                0 32px 64px rgba(0, 0, 0, 0.1),
+                0 16px 32px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 40px 80px rgba(0, 0, 0, 0.12),
+                0 20px 40px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24, #fd79a8);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px),
+                radial-gradient(circle, rgba(255,255,255,0.05) 2px, transparent 2px);
+            background-size: 50px 50px, 100px 100px;
+            animation: float 25s linear infinite;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                rgba(255,255,255,0.8) 0%, 
+                rgba(255,255,255,0.4) 50%, 
+                rgba(255,255,255,0.8) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: -200% 0; }
+            50% { background-position: 200% 0; }
+        }
+
+        @keyframes float {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(45deg, #fff, #ffeb99, #fff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShine 4s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes textShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding: 40px;
+        }
+
+        .form-section, .output-section {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 
+                0 16px 32px rgba(0, 0, 0, 0.08),
+                0 8px 16px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .form-section::before, .output-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(102, 126, 234, 0.5) 50%, 
+                transparent 100%);
+        }
+
+        .form-section:hover, .output-section:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 24px 48px rgba(0, 0, 0, 0.12),
+                0 12px 24px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 
+                0 0 0 4px rgba(102, 126, 234, 0.15),
+                0 4px 16px rgba(102, 126, 234, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-1px);
+        }
+
+        .form-control:hover {
+            border-color: rgba(102, 126, 234, 0.3);
+            box-shadow: 
+                0 4px 12px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .tone-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .tone-option {
+            padding: 16px 12px;
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .tone-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(102, 126, 234, 0.1) 50%, 
+                transparent 100%);
+            transition: left 0.5s ease;
+        }
+
+        .tone-option:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+            box-shadow: 
+                0 8px 24px rgba(102, 126, 234, 0.15),
+                0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .tone-option:hover::before {
+            left: 100%;
+        }
+
+        .tone-option.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 24px rgba(102, 126, 234, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tone-option.active::before {
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                transparent 100%);
+        }
+
+        .urgency-slider {
+            margin-top: 10px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e1e5e9;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .urgency-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2, #667eea);
+            background-size: 200% 200%;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 25px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 
+                0 8px 24px rgba(102, 126, 234, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .generate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                transparent 100%);
+            transition: left 0.6s ease;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 32px rgba(102, 126, 234, 0.4),
+                0 6px 12px rgba(0, 0, 0, 0.15);
+            background-position: 100% 100%;
+        }
+
+        .generate-btn:hover::before {
+            left: 100%;
+        }
+
+        .generate-btn:active {
+            transform: translateY(-1px);
+            transition: transform 0.1s ease;
+        }
+
+        .output-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .letter-preview {
+            background: rgba(248, 249, 250, 0.8);
+            border: 1px solid rgba(233, 236, 239, 0.5);
+            border-radius: 16px;
+            padding: 35px;
+            font-family: 'Georgia', serif;
+            line-height: 1.8;
+            min-height: 400px;
+            white-space: pre-wrap;
+            position: relative;
+            backdrop-filter: blur(5px);
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.7),
+                0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+
+        .letter-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                rgba(102, 126, 234, 0.3) 0%, 
+                rgba(118, 75, 162, 0.3) 50%, 
+                rgba(102, 126, 234, 0.3) 100%);
+            border-radius: 16px 16px 0 0;
+        }
+
+        .letter-preview.formal {
+            font-family: 'Times New Roman', serif;
+            background: linear-gradient(145deg, rgba(248, 249, 250, 0.9), rgba(255, 255, 255, 0.8));
+            border-left: 4px solid #6c757d;
+        }
+
+        .letter-preview.funny {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(145deg, rgba(255, 243, 205, 0.8), rgba(255, 255, 255, 0.8));
+            border-left: 4px solid #ffc107;
+        }
+
+        .letter-preview.passive-aggressive {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(145deg, rgba(248, 215, 218, 0.6), rgba(255, 255, 255, 0.8));
+            border-left: 4px solid #dc3545;
+        }
+
+        .letter-preview.heartfelt {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(145deg, rgba(209, 236, 241, 0.7), rgba(255, 255, 255, 0.8));
+            border-left: 4px solid #17a2b8;
+        }
+
+        .letter-preview.professional {
+            font-family: 'Calibri', sans-serif;
+            background: linear-gradient(145deg, rgba(226, 227, 229, 0.7), rgba(255, 255, 255, 0.8));
+            border-left: 4px solid #6c757d;
+        }
+
+        .letter-preview.casual {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, rgba(216, 243, 220, 0.7), rgba(255, 255, 255, 0.8));
+            border-left: 4px solid #28a745;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 13px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                transparent 100%);
+            transition: left 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-copy:hover {
+            background: linear-gradient(135deg, #218838, #1ba085);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #17a2b8, #6f42c1);
+            color: white;
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-download:hover {
+            background: linear-gradient(135deg, #138496, #5a369c);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(23, 162, 184, 0.4);
+        }
+
+        .btn-share {
+            background: linear-gradient(135deg, #ffc107, #fd7e14);
+            color: #212529;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+        }
+
+        .btn-share:hover {
+            background: linear-gradient(135deg, #e0a800, #e8630a);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 193, 7, 0.4);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: rgba(248, 249, 250, 0.8);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                rgba(102, 126, 234, 0.5) 0%, 
+                rgba(118, 75, 162, 0.5) 100%);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(102, 126, 234, 0.1);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .loading p {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        .toast {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(40, 167, 69, 0.95);
+            color: white;
+            padding: 18px 24px;
+            border-radius: 12px;
+            box-shadow: 
+                0 8px 24px rgba(40, 167, 69, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateX(400px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+            min-width: 250px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            animation: slideInBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .toast.error {
+            background: rgba(220, 53, 69, 0.95);
+            box-shadow: 
+                0 8px 24px rgba(220, 53, 69, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes slideInBounce {
+            0% {
+                transform: translateX(400px);
+            }
+            60% {
+                transform: translateX(-10px);
+            }
+            80% {
+                transform: translateX(5px);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 25px;
+                padding: 25px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .header p {
+                font-size: 1.1rem;
+            }
+            
+            .tone-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .tone-option {
+                padding: 12px 8px;
+                font-size: 13px;
+            }
+
+            .form-section, .output-section {
+                padding: 25px;
+            }
+
+            .container {
+                margin: 10px;
+                border-radius: 20px;
+            }
+
+            .header {
+                padding: 35px 25px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .checkbox-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .tone-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-section, .output-section {
+                padding: 20px;
+            }
+        }
+
+        /* Accessibility improvements */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .container {
+                border: 2px solid #000;
+            }
+
+            .form-control {
+                border: 2px solid #000;
+            }
+
+            .tone-option {
+                border: 2px solid #000;
+            }
+        }
+
+        .feature-highlight {
+            background: linear-gradient(135deg, #667eea, #764ba2, #ff6b6b);
+            background-size: 200% 200%;
+            color: white;
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: gradientShift 6s ease-in-out infinite;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        }
+
+        .feature-highlight::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: float 15s linear infinite;
+        }
+
+        .feature-highlight h3 {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 8px;
+            font-size: 1.3rem;
+        }
+
+        .feature-highlight p {
+            position: relative;
+            z-index: 1;
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .advanced-options {
+            background: rgba(248, 249, 250, 0.6);
+            padding: 25px;
+            border-radius: 16px;
+            margin-top: 25px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .advanced-options:hover {
+            background: rgba(248, 249, 250, 0.8);
+            border-color: rgba(102, 126, 234, 0.2);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        }
+
+        .advanced-options h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateX(2px);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked {
+            transform: scale(1.1);
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #555;
+            transition: color 0.3s ease;
+        }
+
+        .checkbox-item:hover label {
+            color: #667eea;
+        }
+
+        .slider {
+            width: 100%;
+            height: 10px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #e1e5e9 0%, rgba(102, 126, 234, 0.2) 100%);
+            outline: none;
+            -webkit-appearance: none;
+            transition: all 0.3s ease;
+        }
+
+        .slider:hover {
+            background: linear-gradient(90deg, #d1d5d9 0%, rgba(102, 126, 234, 0.3) 100%);
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .urgency-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(102, 126, 234, 0.1);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55)
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎭 Apology Generator Pro</h1>
+            <p>Craft the perfect apology for any situation with AI-powered precision</p>
+        </div>
+
+        <div class="main-content">
+            <div class="form-section">
+                <div class="feature-highlight">
+                    <h3>✨ Professional-Grade Apology Crafting</h3>
+                    <p>Advanced algorithms meet human empathy</p>
+                </div>
+
+                <form id="apologyForm">
+                    <div class="form-group">
+                        <label for="recipient">To Whom:</label>
+                        <input type="text" id="recipient" class="form-control" placeholder="e.g., Sarah, My Team, Mom" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mistake">What Happened:</label>
+                        <textarea id="mistake" class="form-control" placeholder="Describe the situation that requires an apology..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Apology Tone:</label>
+                        <div class="tone-grid">
+                            <div class="tone-option active" data-tone="formal">📋 Formal</div>
+                            <div class="tone-option" data-tone="funny">😄 Humorous</div>
+                            <div class="tone-option" data-tone="passive-aggressive">😏 Passive-Aggressive</div>
+                            <div class="tone-option" data-tone="heartfelt">💝 Heartfelt</div>
+                            <div class="tone-option" data-tone="professional">💼 Professional</div>
+                            <div class="tone-option" data-tone="casual">😊 Casual</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="urgency">Urgency Level: <span id="urgencyValue">5</span>/10</label>
+                        <div class="urgency-slider">
+                            <input type="range" id="urgency" class="slider" min="1" max="10" value="5">
+                            <div class="urgency-labels">
+                                <span>Chill</span>
+                                <span>Moderate</span>
+                                <span>URGENT!</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="relationship">Your Relationship:</label>
+                        <select id="relationship" class="form-control">
+                            <option value="friend">Friend</option>
+                            <option value="colleague">Colleague</option>
+                            <option value="family">Family Member</option>
+                            <option value="boss">Boss/Superior</option>
+                            <option value="client">Client/Customer</option>
+                            <option value="romantic">Romantic Partner</option>
+                            <option value="stranger">Stranger</option>
+                        </select>
+                    </div>
+
+                    <div class="advanced-options">
+                        <h4>🔧 Advanced Options</h4>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="includeGift">
+                                <label for="includeGift">Suggest peace offering</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="includeQuote">
+                                <label for="includeQuote">Add inspirational quote</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="includeAction">
+                                <label for="includeAction">Include action plan</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="includeTimeline">
+                                <label for="includeTimeline">Add timeline for resolution</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="generate-btn">🚀 Generate Apology</button>
+                </form>
+            </div>
+
+            <div class="output-section">
+                <h3>📄 Your Personalized Apology</h3>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Crafting your perfect apology...</p>
+                </div>
+
+                <div id="letterPreview" class="letter-preview">
+                    <p style="text-align: center; color: #666; margin-top: 150px;">
+                        👈 Fill out the form to generate your personalized apology letter
+                    </p>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-copy" onclick="copyToClipboard()">📋 Copy Text</button>
+                    <button class="btn btn-download" onclick="downloadLetter()">💾 Download PDF</button>
+                    <button class="btn btn-share" onclick="shareApology()">📤 Share</button>
+                </div>
+
+                <div class="stats" id="stats" style="display: none;">
+                    <div class="stat-item">
+                        <div class="stat-value" id="wordCount">0</div>
+                        <div class="stat-label">Words</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="readingTime">0</div>
+                        <div class="stat-label">Min Read</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="sincerity">-</div>
+                        <div class="stat-label">Sincerity Score</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        let currentTone = 'formal';
+        let generatedApology = '';
+
+        // Initialize event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tone selection
+            document.querySelectorAll('.tone-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.tone-option').forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                    currentTone = this.dataset.tone;
+                });
+            });
+
+            // Urgency slider
+            document.getElementById('urgency').addEventListener('input', function() {
+                document.getElementById('urgencyValue').textContent = this.value;
+            });
+
+            // Form submission
+            document.getElementById('apologyForm').addEventListener('submit', generateApology);
+        });
+
+        function generateApology(e) {
+            e.preventDefault();
+            
+            const recipient = document.getElementById('recipient').value;
+            const mistake = document.getElementById('mistake').value;
+            const urgency = document.getElementById('urgency').value;
+            const relationship = document.getElementById('relationship').value;
+            
+            const includeGift = document.getElementById('includeGift').checked;
+            const includeQuote = document.getElementById('includeQuote').checked;
+            const includeAction = document.getElementById('includeAction').checked;
+            const includeTimeline = document.getElementById('includeTimeline').checked;
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('letterPreview').style.display = 'none';
+
+            setTimeout(() => {
+                const apology = craftApology({
+                    recipient, mistake, tone: currentTone, urgency, relationship,
+                    includeGift, includeQuote, includeAction, includeTimeline
+                });
+
+                displayApology(apology);
+                
+                // Hide loading
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('letterPreview').style.display = 'block';
+                
+                updateStats(apology);
+            }, 1500);
+        }
+
+        function craftApology(params) {
+            const { recipient, mistake, tone, urgency, relationship, includeGift, includeQuote, includeAction, includeTimeline } = params;
+            
+            const templates = {
+                formal: {
+                    greeting: `Dear ${recipient},`,
+                    opening: `I am writing to formally apologize for ${mistake.toLowerCase()}.`,
+                    body: `I take full responsibility for my actions and understand the impact they may have had. This was not reflective of my usual standards, and I sincerely regret any inconvenience caused.`,
+                    closing: `I hope you will accept my sincere apologies and allow me the opportunity to make amends.`,
+                    signature: `Respectfully yours,\n[Your Name]`
+                },
+                funny: {
+                    greeting: `Hey ${recipient}! 😅`,
+                    opening: `So... about that whole ${mistake.toLowerCase()} thing...`,
+                    body: `I know I messed up worse than a GPS in a tunnel. My bad! 🤦‍♀️ I promise I'm not usually this much of a disaster (only on days ending in 'y').`,
+                    closing: `Please forgive me? I'll even throw in some awkward finger guns 👉👉 as a peace offering!`,
+                    signature: `Your apologetic goofball,\n[Your Name]`
+                },
+                'passive-aggressive': {
+                    greeting: `Hi ${recipient},`,
+                    opening: `I suppose I should apologize for ${mistake.toLowerCase()}.`,
+                    body: `While I'm sorry that you were upset by the situation, I want you to know that it certainly wasn't my intention. I'm sure we can all learn something from this experience.`,
+                    closing: `I hope this clears things up and we can move forward... productively.`,
+                    signature: `Best regards,\n[Your Name]`
+                },
+                heartfelt: {
+                    greeting: `My dear ${recipient},`,
+                    opening: `My heart is heavy as I write this apology for ${mistake.toLowerCase()}.`,
+                    body: `I've been reflecting deeply on my actions, and I realize how much pain I may have caused you. You mean so much to me, and knowing that I've hurt you is devastating. I want you to know that I'm committed to doing better and earning back your trust.`,
+                    closing: `Please know that you are cherished, and I hope you can find it in your heart to forgive me.`,
+                    signature: `With all my love,\n[Your Name]`
+                },
+                professional: {
+                    greeting: `Dear ${recipient},`,
+                    opening: `I would like to address the recent incident regarding ${mistake.toLowerCase()}.`,
+                    body: `I acknowledge that my actions fell short of the professional standards expected in our ${relationship} relationship. I have identified the root causes and am implementing corrective measures to prevent recurrence.`,
+                    closing: `I value our professional relationship and am committed to rebuilding your confidence in my capabilities.`,
+                    signature: `Sincerely,\n[Your Name]`
+                },
+                casual: {
+                    greeting: `Hey ${recipient},`,
+                    opening: `I wanted to reach out about ${mistake.toLowerCase()}.`,
+                    body: `I know I screwed up, and I feel really bad about it. That's totally on me, and I want to make it right. You're important to me, and I hate that I let you down.`,
+                    closing: `Hope we can work through this together. Thanks for being patient with me.`,
+                    signature: `Talk soon,\n[Your Name]`
+                }
+            };
+
+            let apology = templates[tone];
+            let letter = `${apology.greeting}\n\n${apology.opening}\n\n${apology.body}`;
+
+            // Add urgency-based modifications
+            if (urgency > 7) {
+                letter += `\n\nI understand the urgency of this matter and am prepared to discuss this at your earliest convenience.`;
+            }
+
+            // Add optional elements
+            if (includeAction) {
+                letter += `\n\nMoving forward, I will: implement better communication protocols, establish regular check-ins, and create accountability measures to prevent similar issues.`;
+            }
+
+            if (includeTimeline) {
+                letter += `\n\nI propose to address this within the next 48-72 hours and provide you with a progress update by [specific date].`;
+            }
+
+            if (includeGift && tone !== 'passive-aggressive') {
+                const gifts = {
+                    friend: 'coffee date',
+                    family: 'home-cooked meal',
+                    colleague: 'lunch meeting',
+                    boss: 'detailed improvement plan',
+                    client: 'complimentary service',
+                    romantic: 'thoughtful gesture',
+                    stranger: 'small token of appreciation'
+                };
+                letter += `\n\nAs a gesture of goodwill, I'd like to offer ${gifts[relationship] || 'a small token of my sincerity'}.`;
+            }
+
+            if (includeQuote) {
+                const quotes = [
+                    '"The best apology is changed behavior." - Unknown',
+                    '"Everyone makes mistakes. The wise are not people who never make mistakes, but those who forgive themselves and learn from their mistakes." - Ajahn Chah',
+                    '"An apology is the superglue of life. It can repair just about anything." - Lynn Johnston'
+                ];
+                letter += `\n\n${quotes[Math.floor(Math.random() * quotes.length)]}`;
+            }
+
+            letter += `\n\n${apology.closing}\n\n${apology.signature}`;
+            
+            return letter;
+        }
+
+        function displayApology(apology) {
+            const preview = document.getElementById('letterPreview');
+            preview.textContent = apology;
+            preview.className = `letter-preview ${currentTone}`;
+            generatedApology = apology;
+            document.getElementById('stats').style.display = 'grid';
+        }
+
+        function updateStats(text) {
+            const words = text.split(/\s+/).length;
+            const readingTime = Math.ceil(words / 200);
+            const sincerity = calculateSincerity(text);
+            
+            document.getElementById('wordCount').textContent = words;
+            document.getElementById('readingTime').textContent = readingTime;
+            document.getElementById('sincerity').textContent = `${sincerity}/10`;
+        }
+
+        function calculateSincerity(text) {
+            const positiveWords = ['sorry', 'apologize', 'regret', 'mistake', 'understand', 'responsibility', 'forgive'];
+            const words = text.toLowerCase().split(/\s+/);
+            const matches = words.filter(word => positiveWords.some(pw => word.includes(pw))).length;
+            return Math.min(Math.round((matches / words.length) * 100) + 3, 10);
+        }
+
+        async function copyToClipboard() {
+            try {
+                await navigator.clipboard.writeText(generatedApology);
+                showToast('✅ Copied to clipboard!', 'success');
+            } catch (err) {
+                showToast('❌ Failed to copy', 'error');
+            }
+        }
+
+        function downloadLetter() {
+            const element = document.createElement('a');
+            const file = new Blob([generatedApology], {type: 'text/plain'});
+            element.href = URL.createObjectURL(file);
+            element.download = 'apology-letter.txt';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            showToast('📥 Download started!', 'success');
+        }
+
+        async function shareApology() {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'My Apology Letter',
+                        text: generatedApology
+                    });
+                    showToast('📤 Shared successfully!', 'success');
+                } catch (err) {
+                    copyToClipboard();
+                }
+            } else {
+                copyToClipboard();
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
