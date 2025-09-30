@@ -2,34 +2,6 @@
 
 A lightweight apology message generator: create clear, sincere apology text tailored to context, audience, and tone.
 
-Table of contents
-
-About
-
-Features
-
-Demo / Example
-
-Installation
-
-Usage
-
-Template format
-
-Customization
-
-Development
-
-Contributing
-
-License & reuse
-
-Troubleshooting
-
-Contact
-
-Features
-
 Generate apologies in different tones (formal, casual, empathetic, brief).
 
 Accepts contextual inputs (issue summary, affected party, offered fix/compensation, desired length).
