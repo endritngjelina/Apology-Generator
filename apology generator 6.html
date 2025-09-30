@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apology Generator Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a6fd8;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-light: #ffffff;
+            --text-dark: #2d3748;
+            --shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            --shadow-hover: 0 15px 35px rgba(31, 38, 135, 0.5);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            min-height: calc(100vh - 4rem);
+        }
+
+        .panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .panel:hover::before {
+            transform: scaleX(1);
+        }
+
+        .panel:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        h1 {
+            color: var(--text-light);
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--text-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            animation: slideInUp 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+
+        label {
+            display: block;
+            color: var(--text-light);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.3);
+        }
+
+        select option {
+            background: var(--text-dark);
+            color: var(--text-light);
+        }
+
+        .tone-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .tone-option {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tone-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .tone-card {
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tone-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tone-option input[type="radio"]:checked + .tone-card {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(240, 147, 251, 0.2), rgba(102, 126, 234, 0.2));
+            transform: translateY(-3px);
+        }
+
+        .tone-emoji {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .tone-name {
+            color: var(--text-light);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .tone-desc {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+        }
+
+        .advanced-options {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .advanced-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            color: var(--text-light);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .toggle-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .slider-group {
+            margin-bottom: 1rem;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(240, 147, 251, 0.5);
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .generate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .generate-btn:hover::before {
+            left: 100%;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(240, 147, 251, 0.4);
+        }
+
+        .generate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .output-panel {
+            position: relative;
+        }
+
+        .apology-output {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text-dark);
+            border-radius: 12px;
+            padding: 2rem;
+            min-height: 400px;
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .apology-output::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .apology-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .apology-date {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .apology-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .apology-content {
+            white-space: pre-line;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .apology-signature {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            text-align: right;
+            font-style: italic;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn {
+            background: #10b981;
+            color: white;
+        }
+
+        .copy-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .download-btn {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .download-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .share-btn {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        .share-btn:hover {
+            background: #7c3aed;
+            transform: translateY(-2px);
+        }
+
+        .stats-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            color: var(--text-light);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+
+        .placeholder-text {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 4rem 2rem;
+            font-size: 1.1rem;
+        }
+
+        @keyframes slideInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .loading {
+            animation: pulse 1.5s infinite;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+                grid-column: 1;
+            }
+            
+            .tone-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤝 Apology Generator Pro</h1>
+        
+        <div class="panel">
+            <form id="apologyForm">
+                <div class="form-group">
+                    <label for="recipient">Recipient</label>
+                    <input type="text" id="recipient" placeholder="Who are you apologizing to?" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="mistake">What happened?</label>
+                    <textarea id="mistake" rows="3" placeholder="Describe the situation or mistake..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Apology Tone</label>
+                    <div class="tone-selector">
+                        <div class="tone-option">
+                            <input type="radio" name="tone" value="formal" id="formal" checked>
+                            <label for="formal" class="tone-card">
+                                <span class="tone-emoji">🎩</span>
+                                <div class="tone-name">Formal</div>
+                                <div class="tone-desc">Professional & Respectful</div>
+                            </label>
+                        </div>
+                        <div class="tone-option">
+                            <input type="radio" name="tone" value="funny" id="funny">
+                            <label for="funny" class="tone-card">
+                                <span class="tone-emoji">😄</span>
+                                <div class="tone-name">Humorous</div>
+                                <div class="tone-desc">Light-hearted & Playful</div>
+                            </label>
+                        </div>
+                        <div class="tone-option">
+                            <input type="radio" name="tone" value="passive-aggressive" id="passive">
+                            <label for="passive" class="tone-card">
+                                <span class="tone-emoji">😏</span>
+                                <div class="tone-name">Sarcastic</div>
+                                <div class="tone-desc">Subtly Pointed</div>
+                            </label>
+                        </div>
+                        <div class="tone-option">
+                            <input type="radio" name="tone" value="dramatic" id="dramatic">
+                            <label for="dramatic" class="tone-card">
+                                <span class="tone-emoji">🎭</span>
+                                <div class="tone-name">Dramatic</div>
+                                <div class="tone-desc">Over-the-top & Theatrical</div>
+                            </label>
+                        </div>
+                        <div class="tone-option">
+                            <input type="radio" name="tone" value="casual" id="casual">
+                            <label for="casual" class="tone-card">
+                                <span class="tone-emoji">👋</span>
+                                <div class="tone-name">Casual</div>
+                                <div class="tone-desc">Friendly & Relaxed</div>
+                            </label>
+                        </div>
+                        <div class="tone-option">
+                            <input type="radio" name="tone" value="corporate" id="corporate">
+                            <label for="corporate" class="tone-card">
+                                <span class="tone-emoji">💼</span>
+                                <div class="tone-name">Corporate</div>
+                                <div class="tone-desc">Business Speak</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="advanced-options">
+                    <div class="advanced-header">
+                        <span>⚙️ Advanced Options</span>
+                        <button type="button" class="toggle-btn" onclick="toggleAdvanced()">Customize</button>
+                    </div>
+                    <div id="advancedContent" style="display: none;">
+                        <div class="slider-group">
+                            <label>Sincerity Level: <span id="sincerityValue">7</span>/10</label>
+                            <input type="range" class="slider" id="sincerity" min="1" max="10" value="7">
+                        </div>
+                        <div class="slider-group">
+                            <label>Formality Level: <span id="formalityValue">5</span>/10</label>
+                            <input type="range" class="slider" id="formality" min="1" max="10" value="5">
+                        </div>
+                        <div class="form-group">
+                            <label for="context">Additional Context</label>
+                            <textarea id="context" rows="2" placeholder="Any special circumstances or relationship details..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="relationship">Relationship</label>
+                            <select id="relationship">
+                                <option value="friend">Friend</option>
+                                <option value="colleague">Colleague</option>
+                                <option value="boss">Boss</option>
+                                <option value="family">Family Member</option>
+                                <option value="romantic">Romantic Partner</option>
+                                <option value="customer">Customer/Client</option>
+                                <option value="stranger">Stranger</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="generate-btn" id="generateBtn">
+                    ✨ Generate Apology
+                </button>
+            </form>
+        </div>
+
+        <div class="panel output-panel">
+            <div class="apology-output" id="apologyOutput">
+                <div class="placeholder-text">
+                    🎯 Your personalized apology will appear here...<br><br>
+                    Fill out the form to generate a professional apology letter tailored to your specific situation and tone preferences.
+                </div>
+            </div>
+            
+            <div class="action-buttons" id="actionButtons" style="display: none;">
+                <button class="action-btn copy-btn" onclick="copyApology()">📋 Copy</button>
+                <button class="action-btn download-btn" onclick="downloadApology()">💾 Download</button>
+                <button class="action-btn share-btn" onclick="shareApology()">🔗 Share</button>
+            </div>
+
+            <div class="stats-panel">
+                <div class="stat-item">
+                    <div class="stat-number" id="wordCount">0</div>
+                    <div class="stat-label">Words</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="readTime">0</div>
+                    <div class="stat-label">Read Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="sinceLevel">N/A</div>
+                    <div class="stat-label">Tone</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Global variables
+        let currentApology = '';
+        const templates = {
+            formal: {
+                openings: [
+                    "I am writing to formally apologize for",
+                    "Please accept my sincere apologies for",
+                    "I would like to extend my deepest regrets regarding",
+                    "I am reaching out to offer my heartfelt apologies for"
+                ],
+                acknowledgments: [
+                    "I take full responsibility for this oversight and understand the inconvenience it may have caused.",
+                    "I recognize that my actions were inappropriate and I deeply regret any negative impact.",
+                    "I acknowledge that this situation was entirely my fault and I sincerely apologize for any distress caused.",
+                    "I understand the gravity of this situation and take complete accountability for my role in it."
+                ],
+                closings: [
+                    "I am committed to ensuring this does not happen again and will take all necessary steps to prevent future occurrences.",
+                    "Moving forward, I will implement measures to avoid similar situations and maintain the high standards you deserve.",
+                    "I value our relationship greatly and hope to rebuild the trust that may have been affected by this incident.",
+                    "Thank you for your patience and understanding as I work to make this right."
+                ]
+            },
+            funny: {
+                openings: [
+                    "Oops! 🤦‍♂️ Looks like I really stepped in it this time with",
+                    "Well, this is awkward... I may have royally messed up by",
+                    "Plot twist: I'm the villain in this story because I",
+                    "Breaking news: Local person makes spectacular mistake by"
+                ],
+                acknowledgments: [
+                    "I'd blame it on temporary insanity, but let's be honest - this was all me being a complete goofball.",
+                    "My brain apparently took a vacation at the worst possible moment, leaving me to make this brilliant decision.",
+                    "I'm pretty sure there's a manual somewhere titled 'How Not to Adult' and I followed it perfectly.",
+                    "If there was an award for creative ways to mess things up, I'd definitely be in the running."
+                ],
+                closings: [
+                    "I promise to engage my brain before my mouth/actions in the future (novel concept, I know).",
+                    "Consider this my formal application to the 'I Really Should Have Thought This Through' club.",
+                    "I'll try to keep my future mistakes to a minimum - or at least make them less spectacularly obvious!",
+                    "Thanks for putting up with my shenanigans. I owe you big time! 🍕"
+                ]
+            },
+            'passive-aggressive': {
+                openings: [
+                    "I suppose I should apologize for",
+                    "I've been told I should say sorry for",
+                    "While I may not fully understand why, I'm apologizing for",
+                    "Apparently, I need to address the situation regarding"
+                ],
+                acknowledgments: [
+                    "I realize that some people might have been affected by this, though that wasn't necessarily my intention.",
+                    "I understand that not everyone appreciates my approach to handling situations like this.",
+                    "I can see how this might have been interpreted in a way that caused concern for some individuals.",
+                    "I acknowledge that my actions may have been perceived differently than I intended."
+                ],
+                closings: [
+                    "I'll certainly keep everyone's... unique perspectives in mind for future situations.",
+                    "Moving forward, I'll be sure to consider all the various ways my actions might be interpreted.",
+                    "I hope this clears things up, though I suspect we might have different definitions of what happened.",
+                    "Thank you for bringing this to my attention, as subtle as the hint may have been."
+                ]
+            },
+            dramatic: {
+                openings: [
+                    "In the depths of my soul, I must confess the terrible transgression of",
+                    "With a heavy heart and tears of regret, I must atone for",
+                    "From the darkest corners of my conscience comes this plea for forgiveness regarding",
+                    "Like a character in a tragic play, I have committed the grave error of"
+                ],
+                acknowledgments: [
+                    "The weight of my actions crushes my spirit, for I have betrayed the trust placed in me so carelessly.",
+                    "I am haunted by the specter of my mistake, which now looms over me like a dark cloud of shame.",
+                    "The magnitude of my error strikes me like lightning, illuminating the full scope of my folly.",
+                    "I am consumed by remorse, for my actions have torn at the very fabric of our relationship."
+                ],
+                closings: [
+                    "I shall spend eternity making amends for this monumental failure, should you find it in your heart to forgive me.",
+                    "Like a phoenix rising from ashes, I vow to emerge from this tragedy a better, more worthy person.",
+                    "I throw myself upon your mercy, hoping against hope that redemption might still be possible.",
+                    "May the gods forgive me, for I know not if I can ever truly forgive myself for this catastrophic blunder."
+                ]
+            },
+            casual: {
+                openings: [
+                    "Hey! So, I totally messed up with",
+                    "Ugh, I feel pretty bad about",
+                    "So... this is me saying sorry for",
+                    "I know I screwed up when I"
+                ],
+                acknowledgments: [
+                    "That was definitely not my finest moment, and I know it probably sucked for you.",
+                    "I was being a bit of an idiot, and I totally get why you'd be annoyed.",
+                    "Yeah, that was pretty dumb of me, and I'm genuinely sorry about it.",
+                    "I realize I dropped the ball here, and that's on me completely."
+                ],
+                closings: [
+                    "I'll definitely try not to be such a mess in the future!",
+                    "Thanks for being cool about it - I really appreciate your patience with me.",
+                    "Let me know if there's anything I can do to make it up to you!",
+                    "Hope we're good? I promise I'll do better next time."
+                ]
+            },
+            corporate: {
+                openings: [
+                    "We regret to inform you of a service disruption caused by",
+                    "This communication serves to address the recent incident involving",
+                    "We are implementing a comprehensive response to the situation regarding",
+                    "Following our internal review, we acknowledge the process failure that led to"
+                ],
+                acknowledgments: [
+                    "We have identified several process gaps in our current workflow that contributed to this outcome.",
+                    "Our team has conducted a thorough analysis and takes full ownership of this operational oversight.",
+                    "We recognize that this incident falls short of our organization's commitment to excellence.",
+                    "This situation represents a deviation from our established best practices and quality standards."
+                ],
+                closings: [
+                    "We are implementing robust corrective measures to prevent future occurrences and ensure optimal service delivery.",
+                    "Our commitment to continuous improvement drives us to transform this challenge into an opportunity for enhancement.",
+                    "We value your partnership and look forward to demonstrating our renewed dedication to service excellence.",
+                    "We appreciate your patience as we work diligently to exceed your expectations moving forward."
+                ]
+            }
+        };
+
+        // Event listeners
+        document.getElementById('apologyForm').addEventListener('submit', generateApology);
+        document.getElementById('sincerity').addEventListener('input', updateSliderValue);
+        document.getElementById('formality').addEventListener('input', updateSliderValue);
+
+        function updateSliderValue(e) {
+            const slider = e.target;
+            const valueSpan = document.getElementById(slider.id + 'Value');
+            valueSpan.textContent = slider.value;
+        }
+
+        function toggleAdvanced() {
+            const content = document.getElementById('advancedContent');
+            const btn = document.querySelector('.toggle-btn');
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                btn.textContent = 'Hide';
+            } else {
+                content.style.display = 'none';
+                btn.textContent = 'Customize';
+            }
+        }
+
+        function generateApology(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                recipient: formData.get('recipient') || 'there',
+                mistake: formData.get('mistake'),
+                tone: formData.get('tone'),
+                sincerity: parseInt(document.getElementById('sincerity').value),
+                formality: parseInt(document.getElementById('formality').value),
+                context: document.getElementById('context').value,
+                relationship: document.getElementById('relationship').value
+            };
+
+            // Show loading state
+            const btn = document.getElementById('generateBtn');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '🔄 Generating...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                const apology = createApology(data);
+                displayApology(apology, data);
+                updateStats(apology, data.tone);
+                
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 1500);
+        }
+
+        function createApology(data) {
+            const template = templates[data.tone];
+            const opening = getRandomElement(template.openings);
+            const acknowledgment = getRandomElement(template.acknowledgments);
+            const closing = getRandomElement(template.closings);
+
+            let apology = `${opening} ${data.mistake.toLowerCase()}.\n\n`;
+            apology += `${acknowledgment}\n\n`;
+            
+            if (data.context) {
+                apology += addContextualNote(data.context, data.tone) + '\n\n';
+            }
+            
+            apology += `${closing}\n\n`;
+            apology += generateSignature(data.relationship, data.tone);
+
+            // Adjust based on sincerity and formality levels
+            apology = adjustToneIntensity(apology, data.sincerity, data.formality, data.tone);
+            
+            return apology;
+        }
+
+        function addContextualNote(context, tone) {
+            const contextPrefixes = {
+                formal: "Additionally, I want to acknowledge that",
+                funny: "To make matters even more interesting,",
+                'passive-aggressive': "I should probably mention that",
+                dramatic: "In the twisted tapestry of this tale,",
+                casual: "Also, just so you know,",
+                corporate: "For additional context, it should be noted that"
+            };
+            
+            return `${contextPrefixes[tone]} ${context.toLowerCase()}.`;
+        }
+
+        function generateSignature(relationship, tone) {
+            const signatures = {
+                formal: {
+                    friend: "With sincere regret,",
+                    colleague: "Respectfully yours,",
+                    boss: "With deepest respect,",
+                    family: "With love and regret,",
+                    romantic: "With all my love,",
+                    customer: "Sincerely,",
+                    stranger: "Respectfully,"
+                },
+                funny: {
+                    friend: "Your apologetic goofball,",
+                    colleague: "Your sheepish coworker,",
+                    boss: "Your regretful employee (please don't fire me),",
+                    family: "Your lovably dumb family member,",
+                    romantic: "Your adorably clumsy partner,",
+                    customer: "Your embarrassed service provider,",
+                    stranger: "A random person who messed up,"
+                },
+                'passive-aggressive': {
+                    friend: "Your apparently misunderstood friend,",
+                    colleague: "Your colleague (who clearly needs better communication),",
+                    boss: "Your employee (who values constructive feedback),",
+                    family: "Your family member (who appreciates directness),",
+                    romantic: "Your partner (who thought we understood each other),",
+                    customer: "Your service provider (who aims to please),",
+                    stranger: "Someone who clearly misread the situation,"
+                },
+                dramatic: {
+                    friend: "Your tormented and remorseful friend,",
+                    colleague: "Your guilt-ridden colleague,",
+                    boss: "Your deeply ashamed subordinate,",
+                    family: "Your repentant family member,",
+                    romantic: "Your heartbroken and devoted partner,",
+                    customer: "Your humbled service provider,",
+                    stranger: "A soul crushed by their own failings,"
+                },
+                casual: {
+                    friend: "Your buddy,",
+                    colleague: "Your coworker,",
+                    boss: "Your employee,",
+                    family: "Love you,",
+                    romantic: "Love always,",
+                    customer: "Thanks for your patience,",
+                    stranger: "Take care,"
+                },
+                corporate: {
+                    friend: "With professional regards,",
+                    colleague: "Best regards,",
+                    boss: "Respectfully submitted,",
+                    family: "With appreciation,",
+                    romantic: "With continued commitment,",
+                    customer: "Sincerely committed to your satisfaction,",
+                    stranger: "Professional regards,"
+                }
+            };
+            
+            return signatures[tone][relationship] || signatures[tone].friend;
+        }
+
+        function adjustToneIntensity(apology, sincerity, formality, tone) {
+            // Adjust based on sincerity level
+            if (sincerity >= 8) {
+                apology = apology.replace(/I apologize/g, 'I deeply apologize');
+                apology = apology.replace(/sorry/g, 'incredibly sorry');
+            } else if (sincerity <= 3) {
+                apology = apology.replace(/deeply/g, '');
+                apology = apology.replace(/sincerely/g, '');
+            }
+
+            // Add formality adjustments
+            if (formality >= 8) {
+                apology = apology.replace(/I'm/g, 'I am');
+                apology = apology.replace(/don't/g, 'do not');
+                apology = apology.replace(/won't/g, 'will not');
+            }
+
+            return apology;
+        }
+
+        function displayApology(apology, data) {
+            const output = document.getElementById('apologyOutput');
+            const actionButtons = document.getElementById('actionButtons');
+            
+            const currentDate = new Date().toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            const toneEmojis = {
+                formal: '🎩',
+                funny: '😄',
+                'passive-aggressive': '😏',
+                dramatic: '🎭',
+                casual: '👋',
+                corporate: '💼'
+            };
+
+            output.innerHTML = `
+                <div class="apology-header">
+                    <div class="apology-date">${currentDate}</div>
+                    <div class="apology-title">${toneEmojis[data.tone]} Apology Letter</div>
+                    <div style="color: #666; font-size: 0.9rem;">To: ${data.recipient}</div>
+                </div>
+                <div class="apology-content">${apology}</div>
+                <div class="apology-signature">
+                    <em>Generated with Apology Generator Pro</em>
+                </div>
+            `;
+
+            currentApology = output.innerText;
+            actionButtons.style.display = 'flex';
+        }
+
+        function updateStats(apology, tone) {
+            const words = apology.split(' ').length;
+            const readTime = Math.ceil(words / 200); // Average reading speed
+            
+            document.getElementById('wordCount').textContent = words;
+            document.getElementById('readTime').textContent = readTime + 'm';
+            document.getElementById('sinceLevel').textContent = tone.charAt(0).toUpperCase() + tone.slice(1);
+        }
+
+        function copyApology() {
+            navigator.clipboard.writeText(currentApology).then(() => {
+                showNotification('Apology copied to clipboard! 📋');
+            }).catch(() => {
+                showNotification('Failed to copy. Please select and copy manually.', 'error');
+            });
+        }
+
+        function downloadApology() {
+            const element = document.createElement('a');
+            const file = new Blob([currentApology], {type: 'text/plain'});
+            element.href = URL.createObjectURL(file);
+            element.download = 'apology-letter.txt';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+            showNotification('Apology downloaded! 💾');
+        }
+
+        function shareApology() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Apology Letter',
+                    text: currentApology
+                }).then(() => {
+                    showNotification('Apology shared! 🔗');
+                }).catch(() => {
+                    fallbackShare();
+                });
+            } else {
+                fallbackShare();
+            }
+        }
+
+        function fallbackShare() {
+            const shareUrl = `mailto:?subject=My Apology Letter&body=${encodeURIComponent(currentApology)}`;
+            window.open(shareUrl);
+            showNotification('Opening email client... 📧');
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification show ${type}`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function getRandomElement(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        // Add some interactive enhancements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add typing animation to placeholder
+            const placeholder = document.querySelector('.placeholder-text');
+            if (placeholder) {
+                placeholder.style.opacity = '0';
+                setTimeout(() => {
+                    placeholder.style.transition = 'opacity 0.5s ease';
+                    placeholder.style.opacity = '1';
+                }, 500);
+            }
+
+            // Add hover effects to form elements
+            const inputs = document.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.closest('.form-group').style.transform = 'translateY(-2px)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.closest('.form-group').style.transform = 'translateY(0)';
+                });
+            });
+
+            // Add particle effect on button click
+            const generateBtn = document.getElementById('generateBtn');
+            generateBtn.addEventListener('click', function(e) {
+                createButtonEffect(e);
+            });
+        });
+
+        function createButtonEffect(e) {
+            const button = e.target;
+            const rect = button.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const ripple = document.createElement('span');
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                left: ${x - 10}px;
+                top: ${y - 10}px;
+                width: 20px;
+                height: 20px;
+                pointer-events: none;
+            `;
+
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            button.appendChild(ripple);
+            setTimeout(() => {
+                ripple.remove();
+                style.remove();
+            }, 600);
+        }
+
+        // Add easter egg - Konami code
+        let konamiCode = [];
+        const konami = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+        
+        document.addEventListener('keydown', function(e) {
+            konamiCode.push(e.keyCode);
+            if (konamiCode.length > konami.length) {
+                konamiCode.shift();
+            }
+            
+            if (konamiCode.toString() === konami.toString()) {
+                showNotification('🎉 Secret mode activated! Extra dramatic templates unlocked!');
+                addSecretTemplates();
+            }
+        });
+
+        function addSecretTemplates() {
+            templates.dramatic.openings.push(
+                "In this moment of cosmic reckoning, I must confess to the universe about",
+                "As the very foundations of reality crumble beneath me, I acknowledge my role in"
+            );
+        }
+    </script>
+</body>
+</html>
