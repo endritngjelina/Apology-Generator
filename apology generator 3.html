@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apology Generator Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(25px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 32px 64px rgba(0, 0, 0, 0.15),
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            max-width: 1000px;
+            width: 100%;
+            overflow: hidden;
+            animation: containerFloat 0.8s ease-out, containerGlow 4s ease-in-out infinite alternate;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes containerFloat {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes containerGlow {
+            from {
+                box-shadow: 
+                    0 32px 64px rgba(0, 0, 0, 0.15),
+                    0 8px 32px rgba(0, 0, 0, 0.1),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            }
+            to {
+                box-shadow: 
+                    0 40px 80px rgba(103, 126, 234, 0.2),
+                    0 8px 32px rgba(0, 0, 0, 0.1),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899);
+            background-size: 200% 200%;
+            animation: headerGradient 8s ease infinite;
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(255,255,255,0.1) 50%, 
+                transparent 70%);
+            transform: translateX(-100%);
+            animation: shimmer 3s infinite;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .header h1, .header p {
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes headerGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.1; transform: scale(1.1); }
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 600px;
+        }
+
+        .form-section {
+            padding: 40px;
+            background: linear-gradient(45deg, #f8fafc, #f1f5f9);
+        }
+
+        .output-section {
+            padding: 40px;
+            background: linear-gradient(145deg, #1e293b, #334155, #475569);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .output-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(79, 70, 229, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="0.5" fill="white" opacity="0.03"/><circle cx="75" cy="75" r="0.3" fill="white" opacity="0.02"/><circle cx="50" cy="10" r="0.4" fill="white" opacity="0.025"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+            animation: backgroundShift 20s ease infinite;
+        }
+
+        @keyframes backgroundShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            font-family: inherit;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 
+                0 0 0 4px rgba(79, 70, 229, 0.15),
+                0 4px 12px rgba(79, 70, 229, 0.1);
+            transform: translateY(-2px) scale(1.02);
+            background: linear-gradient(135deg, #ffffff 0%, #fefefe 100%);
+        }
+
+        .form-control::placeholder {
+            color: #9ca3af;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus::placeholder {
+            color: #d1d5db;
+            transform: translateY(-2px);
+        }
+
+        .tone-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .tone-btn {
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            font-size: 0.9rem;
+            user-select: none;
+        }
+
+        .tone-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .tone-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.15),
+                0 4px 10px rgba(0, 0, 0, 0.1);
+            border-color: #d1d5db;
+        }
+
+        .tone-btn:hover::before {
+            left: 100%;
+        }
+
+        .tone-btn.active {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border-color: #4f46e5;
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 
+                0 8px 25px rgba(79, 70, 229, 0.3),
+                0 4px 10px rgba(79, 70, 229, 0.2);
+        }
+
+        .tone-btn.active::before {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        .severity-slider {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #e5e7eb 0%, #d1d5db 100%);
+            outline: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 4px 12px rgba(79, 70, 229, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 3px solid white;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+            box-shadow: 
+                0 8px 25px rgba(79, 70, 229, 0.5),
+                0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider::-webkit-slider-thumb:active {
+            transform: scale(1.4);
+        }
+
+        .severity-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899);
+            background-size: 200% 200%;
+            animation: buttonGradient 3s ease infinite;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 25px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+        }
+
+        .generate-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 
+                0 15px 35px rgba(79, 70, 229, 0.4),
+                0 8px 15px rgba(79, 70, 229, 0.2);
+        }
+
+        .generate-btn:hover::before {
+            left: 100%;
+        }
+
+        .generate-btn:active {
+            transform: translateY(-2px) scale(1.01);
+            transition: all 0.1s ease;
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @keyframes buttonGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .output-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .output-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .apology-text {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 30px;
+            line-height: 1.8;
+            font-size: 1.05rem;
+            min-height: 320px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            white-space: pre-wrap;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+        }
+
+        .apology-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: textShimmer 3s ease-in-out infinite;
+        }
+
+        .apology-text:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        @keyframes textShimmer {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            color: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .action-btn:active {
+            transform: translateY(-1px) scale(1.01);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 20px 15px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b, #d97706);
+            border-radius: 2px;
+        }
+
+        .stat:hover {
+            transform: translateY(-4px) scale(1.03);
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .additional-features {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .feature-btn {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #10b981, #059669, #047857);
+            background-size: 200% 200%;
+            animation: featureGradient 4s ease infinite;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .feature-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .feature-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .feature-btn:hover::before {
+            left: 100%;
+        }
+
+        .feature-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        @keyframes featureGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .toast {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            transform: translateX(400px) translateY(-20px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            font-weight: 600;
+            box-shadow: 
+                0 10px 25px rgba(16, 185, 129, 0.3),
+                0 4px 10px rgba(0, 0, 0, 0.1);
+            min-width: 250px;
+        }
+
+        .toast.show {
+            transform: translateX(0) translateY(0);
+        }
+
+        .toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.3), rgba(255,255,255,0.6), rgba(255,255,255,0.3));
+            border-radius: 2px;
+        };
+
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-section, .output-section {
+                padding: 25px;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🙏 Apology Generator Pro</h1>
+            <p>Craft the perfect apology with AI-powered personalization</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="recipient">Recipient Name</label>
+                    <input type="text" id="recipient" class="form-control" placeholder="e.g., Sarah, Mom, Boss">
+                </div>
+
+                <div class="form-group">
+                    <label for="mistake">What did you do?</label>
+                    <textarea id="mistake" class="form-control" rows="4" placeholder="Describe your mistake or situation..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Apology Tone</label>
+                    <div class="tone-selector">
+                        <div class="tone-btn active" data-tone="formal">📋 Formal</div>
+                        <div class="tone-btn" data-tone="casual">😊 Casual</div>
+                        <div class="tone-btn" data-tone="funny">😂 Funny</div>
+                        <div class="tone-btn" data-tone="passive-aggressive">😏 Sarcastic</div>
+                        <div class="tone-btn" data-tone="dramatic">🎭 Dramatic</div>
+                        <div class="tone-btn" data-tone="romantic">💕 Romantic</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Severity Level</label>
+                    <div class="severity-slider">
+                        <input type="range" min="1" max="10" value="5" class="slider" id="severity">
+                        <div class="severity-labels">
+                            <span>Minor Oops</span>
+                            <span>Major Disaster</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="generate-btn" id="generateBtn">
+                    Generate Apology
+                </button>
+
+                <div class="additional-features">
+                    <label>Quick Actions</label>
+                    <div class="feature-grid">
+                        <button class="feature-btn" id="addEmojis">Add Emojis</button>
+                        <button class="feature-btn" id="makePoetic">Make Poetic</button>
+                        <button class="feature-btn" id="addJoke">Add Humor</button>
+                        <button class="feature-btn" id="makeProfessional">Corporate Style</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="output-content">
+                    <div class="output-header">
+                        <div class="output-title">Your Apology</div>
+                    </div>
+                    
+                    <div class="apology-text" id="apologyOutput">
+Your perfectly crafted apology will appear here...
+
+🎯 Tips for a great apology:
+• Be specific about what you did wrong
+• Take full responsibility
+• Show empathy for how it affected others
+• Offer a genuine solution or commitment to change
+
+Click "Generate Apology" to get started!
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="action-btn" id="copyBtn">📋 Copy</button>
+                        <button class="action-btn" id="emailBtn">✉️ Email</button>
+                        <button class="action-btn" id="regenerateBtn">🔄 Regenerate</button>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value" id="wordCount">0</div>
+                            <div class="stat-label">Words</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="sincerity">0%</div>
+                            <div class="stat-label">Sincerity</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value" id="effectiveness">0%</div>
+                            <div class="stat-label">Effectiveness</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        class ApologyGenerator {
+            constructor() {
+                this.currentTone = 'formal';
+                this.currentText = '';
+                this.templates = this.initializeTemplates();
+                this.bindEvents();
+            }
+
+            initializeTemplates() {
+                return {
+                    formal: {
+                        opening: [
+                            "Dear {recipient},\n\nI am writing to offer my sincere apologies for",
+                            "Dear {recipient},\n\nI want to formally apologize for",
+                            "Dear {recipient},\n\nPlease accept my heartfelt apology for"
+                        ],
+                        body: [
+                            "I take full responsibility for my actions and understand the impact they have had.",
+                            "I recognize that my behavior was inappropriate and I deeply regret any inconvenience caused.",
+                            "I acknowledge that my actions were unacceptable and I am committed to making amends."
+                        ],
+                        closing: [
+                            "I am committed to ensuring this does not happen again.\n\nSincerely,\n[Your name]",
+                            "Please know that I am taking steps to prevent this from recurring.\n\nWith deepest regrets,\n[Your name]",
+                            "I hope you can find it in your heart to forgive me.\n\nRespectfully yours,\n[Your name]"
+                        ]
+                    },
+                    casual: {
+                        opening: [
+                            "Hey {recipient},\n\nI messed up and I want to apologize for",
+                            "Hi {recipient},\n\nI feel terrible about",
+                            "{recipient}, I'm really sorry about"
+                        ],
+                        body: [
+                            "I know I screwed up and I feel awful about it.",
+                            "That was totally my bad and I want to make it right.",
+                            "I realize I was wrong and I want you to know I'm genuinely sorry."
+                        ],
+                        closing: [
+                            "Hope we can move past this!\n\nTalk soon,\n[Your name]",
+                            "Let me know how I can make it up to you.\n\n[Your name]",
+                            "Thanks for being understanding.\n\n[Your name]"
+                        ]
+                    },
+                    funny: {
+                        opening: [
+                            "Dear {recipient},\n\nWell, I've managed to mess up spectacularly by",
+                            "Hey {recipient},\n\nSo... funny story... actually no, it's not funny. I",
+                            "{recipient}, I've achieved a new level of stupidity by"
+                        ],
+                        body: [
+                            "I promise this wasn't part of some elaborate comedy routine - I'm just naturally this talented at making mistakes!",
+                            "If there was an Olympic sport for poor decision-making, I'd have just won gold.",
+                            "I'd like to blame it on temporary insanity, but let's be honest, this is pretty on-brand for me."
+                        ],
+                        closing: [
+                            "Please forgive your lovably disaster-prone friend!\n\n😅 [Your name]",
+                            "I promise to consult my common sense next time (if I can find it).\n\n🤦‍♂️ [Your name]",
+                            "Still your favorite walking calamity,\n\n[Your name]"
+                        ]
+                    },
+                    'passive-aggressive': {
+                        opening: [
+                            "Dear {recipient},\n\nI'm *so* sorry for",
+                            "Hi {recipient},\n\nI guess I should apologize for",
+                            "{recipient}, I'm apparently supposed to say sorry for"
+                        ],
+                        body: [
+                            "I mean, I thought it was pretty obvious, but apparently not everyone sees it that way.",
+                            "I suppose some people might consider what I did to be 'wrong' or whatever.",
+                            "I didn't realize we were playing by different rules, but here we are."
+                        ],
+                        closing: [
+                            "Hope this clears everything up!\n\n*Sincerely*,\n[Your name]",
+                            "Glad we could have this *wonderful* conversation.\n\n[Your name]",
+                            "Thanks for the *learning experience*.\n\n[Your name]"
+                        ]
+                    },
+                    dramatic: {
+                        opening: [
+                            "Dearest {recipient},\n\nMy heart is heavy with remorse as I pen these words about",
+                            "My beloved {recipient},\n\nThe weight of my transgression haunts me - I must confess that I",
+                            "Oh {recipient}, how can I ever forgive myself for"
+                        ],
+                        body: [
+                            "Like a tragic hero in a Shakespearean play, I have fallen from grace through my own hubris.",
+                            "The gods themselves must weep at the magnitude of my folly.",
+                            "I am but a wretched soul, cast into the abyss of regret by my own misdeeds."
+                        ],
+                        closing: [
+                            "I throw myself upon your mercy, praying for redemption.\n\nYours in eternal anguish,\n[Your name]",
+                            "May the heavens forgive what I cannot forgive in myself.\n\nForever your repentant servant,\n[Your name]",
+                            "I remain, in deepest sorrow and humility,\n\n[Your name]"
+                        ]
+                    },
+                    romantic: {
+                        opening: [
+                            "My darling {recipient},\n\nMy heart aches knowing that I have hurt you by",
+                            "Sweetheart {recipient},\n\nI can't bear the thought that I've caused you pain through",
+                            "My love {recipient},\n\nEvery beat of my heart carries regret for"
+                        ],
+                        body: [
+                            "You mean the world to me, and knowing I've let you down is the most painful thing I could imagine.",
+                            "Our love is too precious to let my mistakes come between us.",
+                            "You deserve so much better than the pain I've caused you."
+                        ],
+                        closing: [
+                            "Please let me spend every day making it up to you.\n\nWith all my love,\n[Your name]",
+                            "You have my heart, and my promise to do better.\n\nForever yours,\n[Your name]",
+                            "I love you more than words can express.\n\nAlways,\n[Your name]"
+                        ]
+                    }
+                };
+            }
+
+            bindEvents() {
+                // Tone selection
+                document.querySelectorAll('.tone-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.tone-btn').forEach(b => b.classList.remove('active'));
+                        e.target.classList.add('active');
+                        this.currentTone = e.target.dataset.tone;
+                    });
+                });
+
+                // Generate button
+                document.getElementById('generateBtn').addEventListener('click', () => {
+                    this.generateApology();
+                });
+
+                // Action buttons
+                document.getElementById('copyBtn').addEventListener('click', () => this.copyToClipboard());
+                document.getElementById('emailBtn').addEventListener('click', () => this.openEmail());
+                document.getElementById('regenerateBtn').addEventListener('click', () => this.generateApology());
+
+                // Feature buttons
+                document.getElementById('addEmojis').addEventListener('click', () => this.addEmojis());
+                document.getElementById('makePoetic').addEventListener('click', () => this.makePoetic());
+                document.getElementById('addJoke').addEventListener('click', () => this.addJoke());
+                document.getElementById('makeProfessional').addEventListener('click', () => this.makeProfessional());
+            }
+
+            generateApology() {
+                const recipient = document.getElementById('recipient').value || 'Friend';
+                const mistake = document.getElementById('mistake').value || 'my recent actions';
+                const severity = document.getElementById('severity').value;
+                
+                const btn = document.getElementById('generateBtn');
+                btn.innerHTML = '<div class="loading"></div>Generating...';
+                btn.disabled = true;
+
+                // Simulate API delay for realism
+                setTimeout(() => {
+                    const apology = this.craftApology(recipient, mistake, severity);
+                    this.displayApology(apology);
+                    this.updateStats(apology);
+                    
+                    btn.innerHTML = 'Generate Apology';
+                    btn.disabled = false;
+                }, 1500);
+            }
+
+            craftApology(recipient, mistake, severity) {
+                const template = this.templates[this.currentTone];
+                const severityInt = parseInt(severity);
+                
+                // Select templates based on severity
+                const openingIndex = Math.min(Math.floor(severityInt / 4), template.opening.length - 1);
+                const bodyIndex = Math.min(Math.floor(severityInt / 4), template.body.length - 1);
+                const closingIndex = Math.min(Math.floor(severityInt / 4), template.closing.length - 1);
+                
+                let apology = template.opening[openingIndex];
+                apology = apology.replace('{recipient}', recipient);
+                apology += ` ${mistake}.\n\n`;
+                apology += `${template.body[bodyIndex]}\n\n`;
+                
+                // Add severity-based content
+                if (severityInt >= 7) {
+                    apology += this.addSeverityContent(severityInt) + '\n\n';
+                }
+                
+                apology += template.closing[closingIndex];
+                
+                return apology;
+            }
+
+            addSeverityContent(severity) {
+                const severityContent = {
+                    formal: [
+                        "I understand the seriousness of this situation and am prepared to face any consequences.",
+                        "I am implementing immediate changes to prevent such incidents in the future.",
+                        "I would welcome the opportunity to discuss this matter further at your convenience."
+                    ],
+                    casual: [
+                        "I know this is a big deal and I'm taking it seriously.",
+                        "I'm already working on making sure this never happens again.",
+                        "I really hope we can talk about this when you're ready."
+                    ],
+                    funny: [
+                        "I promise to add 'thinking before acting' to my daily routine!",
+                        "I'm enrolling in 'Common Sense 101' as we speak.",
+                        "My brain has officially been put on probation."
+                    ]
+                };
+                
+                const content = severityContent[this.currentTone] || severityContent.formal;
+                return content[Math.floor(Math.random() * content.length)];
+            }
+
+            displayApology(apology) {
+                const output = document.getElementById('apologyOutput');
+                this.currentText = apology;
+                
+                // Typewriter effect
+                output.textContent = '';
+                let i = 0;
+                const typeWriter = () => {
+                    if (i < apology.length) {
+                        output.textContent += apology.charAt(i);
+                        i++;
+                        setTimeout(typeWriter, 20);
+                    }
+                };
+                typeWriter();
+            }
+
+            updateStats(apology) {
+                const wordCount = apology.split(/\s+/).length;
+                const sincerity = Math.floor(Math.random() * 30) + 70; // 70-100%
+                const effectiveness = Math.floor(Math.random() * 25) + 75; // 75-100%
+                
+                document.getElementById('wordCount').textContent = wordCount;
+                document.getElementById('sincerity').textContent = sincerity + '%';
+                document.getElementById('effectiveness').textContent = effectiveness + '%';
+            }
+
+            addEmojis() {
+                const emojis = ['😊', '🙏', '💝', '🌟', '❤️', '🤗', '✨', '💫'];
+                const randomEmojis = emojis.sort(() => 0.5 - Math.random()).slice(0, 3);
+                this.currentText += `\n\n${randomEmojis.join(' ')}`;
+                document.getElementById('apologyOutput').textContent = this.currentText;
+                this.showToast('Emojis added! ✨');
+            }
+
+            makePoetic() {
+                const poeticEndings = [
+                    "\n\nLike morning dew upon the grass,\nMy regrets shall gently pass.\nBut lessons learned will always stay,\nTo guide me on a better way.",
+                    "\n\nIn the garden of forgiveness,\nMay our friendship bloom once more.\nThrough the seasons of our kindness,\nLove will heal what came before.",
+                    "\n\nStars may fall and winds may change,\nBut my commitment stays the same.\nTo be worthy of your trust again,\nAnd honor your precious name."
+                ];
+                
+                const randomPoem = poeticEndings[Math.floor(Math.random() * poeticEndings.length)];
+                this.currentText += randomPoem;
+                document.getElementById('apologyOutput').textContent = this.currentText;
+                this.showToast('Poetry added! 🎭');
+            }
+
+            addJoke() {
+                const jokes = [
+                    "\n\nP.S. I promise my next mistake will be much more creative and original!",
+                    "\n\nP.S. On the bright side, we now have a great story to tell at parties!",
+                    "\n\nP.S. I'm considering a career change to professional mistake-maker. Thoughts?"
+                ];
+                
+                const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+                this.currentText += randomJoke;
+                document.getElementById('apologyOutput').textContent = this.currentText;
+                this.showToast('Humor added! 😂');
+            }
+
+            makeProfessional() {
+                this.currentText += "\n\nI have initiated a comprehensive review of the processes that led to this situation and will be implementing additional safeguards to prevent similar occurrences. I remain committed to maintaining the highest standards of professionalism in all future interactions.";
+                document.getElementById('apologyOutput').textContent = this.currentText;
+                this.showToast('Professional tone applied! 📊');
+            }
+
+            copyToClipboard() {
+                navigator.clipboard.writeText(this.currentText).then(() => {
+                    this.showToast('Copied to clipboard! 📋');
+                });
+            }
+
+            openEmail() {
+                const subject = 'Apology';
+                const body = encodeURIComponent(this.currentText);
+                window.open(`mailto:?subject=${subject}&body=${body}`);
+                this.showToast('Email client opened! ✉️');
+            }
+
+            showToast(message) {
+                const toast = document.getElementById('toast');
+                toast.textContent = message;
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            new ApologyGenerator();
+        });
+    </script>
+</body>
+</html>
