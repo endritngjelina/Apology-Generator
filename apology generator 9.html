@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apology Generator Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #ff6b6b;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #fd7e14;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --text: #2c3e50;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-gradient-dark: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-bg-dark: rgba(30, 35, 40, 0.95);
+            --text-dark: #f8f9fa;
+            --shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            --shadow-dark: 0 20px 40px rgba(0, 0, 0, 0.3);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: var(--text);
+            overflow-x: hidden;
+            transition: background 0.5s ease;
+        }
+
+        body.dark-theme {
+            background: var(--bg-gradient-dark);
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            background: linear-gradient(90deg, #ff9a9e, #fad0c4, #fad0c4, #a18cd1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        .dark-theme .header p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-panel, .output-panel {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .dark-theme .input-panel, 
+        .dark-theme .output-panel {
+            background: var(--card-bg-dark);
+            box-shadow: var(--shadow-dark);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-panel {
+            height: fit-content;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        .dark-theme .form-group label {
+            color: var(--text-dark);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: #f8f9fa;
+        }
+
+        .dark-theme .form-group input, 
+        .dark-theme .form-group select, 
+        .dark-theme .form-group textarea {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: #444;
+            color: var(--text-dark);
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+            transform: translateY(-1px);
+        }
+
+        .dark-theme .form-group input:focus, 
+        .dark-theme .form-group select:focus, 
+        .dark-theme .form-group textarea:focus {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .tone-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .tone-option {
+            position: relative;
+        }
+
+        .tone-option input[type="radio"] {
+            opacity: 0;
+            position: absolute;
+        }
+
+        .tone-option label {
+            display: block;
+            padding: 12px 20px;
+            background: #f8f9fa;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .dark-theme .tone-option label {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: #444;
+            color: var(--text-dark);
+        }
+
+        .tone-option input[type="radio"]:checked + label {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .tone-option label:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 16px 24px;
+            background: var(--bg-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .output-panel {
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .dark-theme .output-header {
+            border-bottom-color: #444;
+        }
+
+        .output-header h3 {
+            color: var(--text);
+            font-size: 1.4rem;
+        }
+
+        .dark-theme .output-header h3 {
+            color: var(--text-dark);
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .copy-btn {
+            background: var(--success);
+        }
+
+        .download-btn {
+            background: var(--info);
+        }
+
+        .share-btn {
+            background: var(--warning);
+        }
+
+        .voice-btn {
+            background: var(--accent);
+        }
+
+        .apology-output {
+            flex: 1;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            border: 1px solid #e9ecef;
+            white-space: pre-wrap;
+            font-family: 'Georgia', serif;
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .dark-theme .apology-output {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: #444;
+            color: var(--text-dark);
+        }
+
+        .placeholder {
+            color: #6c757d;
+            font-style: italic;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 1.2rem;
+            flex-direction: column;
+        }
+
+        .dark-theme .placeholder {
+            color: #aaa;
+        }
+
+        .advanced-options {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #e9ecef;
+        }
+
+        .dark-theme .advanced-options {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: #444;
+        }
+
+        .advanced-options h4 {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+
+        .dark-theme .advanced-options h4 {
+            color: var(--text-dark);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+
+        .stats-panel {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+
+        .dark-theme .stats-panel {
+            background: var(--card-bg-dark);
+            box-shadow: var(--shadow-dark);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .dark-theme .stat-item {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .dark-theme .stat-label {
+            color: #aaa;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 20s infinite linear;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dark-theme .shape {
+            background: rgba(0, 0, 0, 0.1);
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .shape:nth-child(1) { width: 80px; height: 80px; top: 20%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 60px; height: 60px; top: 60%; left: 80%; animation-delay: 5s; }
+        .shape:nth-child(3) { width: 100px; height: 100px; top: 80%; left: 20%; animation-delay: 10s; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            z-index: 1000;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(30deg);
+        }
+
+        /* History Panel */
+        .history-panel {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 380px;
+            height: 100%;
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            padding: 20px;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 999;
+            transition: right 0.4s ease;
+            overflow-y: auto;
+        }
+
+        .dark-theme .history-panel {
+            background: var(--card-bg-dark);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .history-panel.active {
+            right: 0;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .dark-theme .history-header {
+            border-bottom-color: #444;
+        }
+
+        .history-header h3 {
+            color: var(--text);
+            font-size: 1.4rem;
+        }
+
+        .dark-theme .history-header h3 {
+            color: var(--text-dark);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .history-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .dark-theme .history-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: #444;
+        }
+
+        .history-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-item-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--text);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .dark-theme .history-item-title {
+            color: var(--text-dark);
+        }
+
+        .history-item-content {
+            font-size: 0.9rem;
+            color: #6c757d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dark-theme .history-item-content {
+            color: #aaa;
+        }
+
+        .history-item-time {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+
+        .dark-theme .history-item-time {
+            color: #888;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 30px 0;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .dark-theme .empty-history {
+            color: #888;
+        }
+
+        /* History Toggle Button */
+        .history-toggle {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+            z-index: 1000;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .history-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Language Selector */
+        .language-selector {
+            margin-bottom: 25px;
+        }
+
+        .language-selector label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        .dark-theme .language-selector label {
+            color: var(--text-dark);
+        }
+
+        .language-selector select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: #f8f9fa;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        .dark-theme .language-selector select {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: #444;
+            color: var(--text-dark);
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: var(--success);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: var(--accent);
+        }
+
+        .notification.warning {
+            background: var(--warning);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .tone-selector {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-btn span {
+                display: none;
+            }
+            
+            .action-btn i {
+                margin-right: 0;
+            }
+        }
+
+        /* AI Thinking Animation */
+        .ai-thinking {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+            color: #6c757d;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .dark-theme .ai-thinking {
+            color: #aaa;
+        }
+
+        .ai-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ai-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: bounce 1.5s infinite ease-in-out;
+        }
+
+        .ai-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .ai-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <button class="history-toggle" id="historyToggle">
+        <i class="fas fa-history"></i>
+    </button>
+
+    <div class="history-panel" id="historyPanel">
+        <div class="history-header">
+            <h3>Apology History</h3>
+            <button class="action-btn" id="closeHistory">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="history-list" id="historyList">
+            <div class="empty-history">No apologies generated yet</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Apology Generator Pro</h1>
+            <p>Craft the perfect apology with AI-powered precision and style</p>
+        </div>
+
+        <div class="main-content">
+            <div class="input-panel">
+                <form id="apologyForm">
+                    <div class="language-selector">
+                        <label for="language">Language</label>
+                        <select id="language">
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="it">Italian</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="recipientName">Recipient Name</label>
+                        <input type="text" id="recipientName" placeholder="Who are you apologizing to?">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="senderName">Your Name</label>
+                        <input type="text" id="senderName" placeholder="Your name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mistake">What happened?</label>
+                        <textarea id="mistake" placeholder="Describe the situation that requires an apology..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Apology Tone</label>
+                        <div class="tone-selector">
+                            <div class="tone-option">
+                                <input type="radio" id="formal" name="tone" value="formal" checked>
+                                <label for="formal">Formal</label>
+                            </div>
+                            <div class="tone-option">
+                                <input type="radio" id="casual" name="tone" value="casual">
+                                <label for="casual">Casual</label>
+                            </div>
+                            <div class="tone-option">
+                                <input type="radio" id="funny" name="tone" value="funny">
+                                <label for="funny">Humorous</label>
+                            </div>
+                            <div class="tone-option">
+                                <input type="radio" id="heartfelt" name="tone" value="heartfelt">
+                                <label for="heartfelt">Heartfelt</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="advanced-options">
+                        <h4>Advanced Options</h4>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="includeGift">
+                                <label for="includeGift">Mention making amends</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="urgentFlag">
+                                <label for="urgentFlag">Express urgency</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="takeFullResponsibility">
+                                <label for="takeFullResponsibility">Take full responsibility</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="includeTimeline">
+                                <label for="includeTimeline">Include improvement timeline</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="generate-btn" id="generateBtn">
+                        <i class="fas fa-magic"></i> Generate Apology
+                    </button>
+                </form>
+            </div>
+
+            <div class="output-panel">
+                <div class="output-header">
+                    <h3>Generated Apology</h3>
+                    <div>
+                        <button class="action-btn copy-btn" id="copyBtn" style="display: none;">
+                            <i class="fas fa-copy"></i> <span>Copy</span>
+                        </button>
+                        <button class="action-btn download-btn" id="downloadBtn" style="display: none;">
+                            <i class="fas fa-download"></i> <span>Download</span>
+                        </button>
+                        <button class="action-btn voice-btn" id="voiceBtn" style="display: none;">
+                            <i class="fas fa-volume-up"></i> <span>Listen</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="apology-output" id="apologyOutput">
+                    <div class="placeholder">
+                        <i class="fas fa-comment-dots" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                        <p>Your personalized apology will appear here...</p>
+                        <p>Fill out the form and click "Generate Apology" to get started!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="wordCount">0</div>
+                    <div class="stat-label">Words</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="charCount">0</div>
+                    <div class="stat-label">Characters</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="sentenceCount">0</div>
+                    <div class="stat-label">Sentences</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="readingTime">0</div>
+                    <div class="stat-label">Reading Time (min)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Apology copied to clipboard!</span>
+    </div>
+
+    <script>
+        class ApologyGenerator {
+            constructor() {
+                this.form = document.getElementById('apologyForm');
+                this.output = document.getElementById('apologyOutput');
+                this.generateBtn = document.getElementById('generateBtn');
+                this.copyBtn = document.getElementById('copyBtn');
+                this.downloadBtn = document.getElementById('downloadBtn');
+                this.voiceBtn = document.getElementById('voiceBtn');
+                this.notification = document.getElementById('notification');
+                this.historyList = document.getElementById('historyList');
+                this.themeToggle = document.getElementById('themeToggle');
+                this.historyToggle = document.getElementById('historyToggle');
+                this.historyPanel = document.getElementById('historyPanel');
+                this.closeHistory = document.getElementById('closeHistory');
+                this.languageSelector = document.getElementById('language');
+                
+                this.synth = window.speechSynthesis;
+                this.isSpeaking = false;
+                this.history = [];
+                this.maxHistoryItems = 10;
+                
+                this.initEventListeners();
+                this.loadHistory();
+                this.loadThemePreference();
+                this.initTemplates();
+            }
+
+            initEventListeners() {
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+                this.copyBtn.addEventListener('click', () => this.copyToClipboard());
+                this.downloadBtn.addEventListener('click', () => this.downloadApology());
+                this.voiceBtn.addEventListener('click', () => this.toggleVoice());
+                this.themeToggle.addEventListener('click', () => this.toggleTheme());
+                this.historyToggle.addEventListener('click', () => this.toggleHistoryPanel(true));
+                this.closeHistory.addEventListener('click', () => this.toggleHistoryPanel(false));
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.historyPanel.classList.contains('active')) {
+                        this.toggleHistoryPanel(false);
+                    }
+                });
+            }
+
+            loadThemePreference() {
+                const savedTheme = localStorage.getItem('apologyTheme');
+                if (savedTheme === 'dark') {
+                    document.body.classList.add('dark-theme');
+                    this.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                }
+            }
+
+            toggleTheme() {
+                document.body.classList.toggle('dark-theme');
+                const isDark = document.body.classList.contains('dark-theme');
+                
+                if (isDark) {
+                    localStorage.setItem('apologyTheme', 'dark');
+                    this.themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                } else {
+                    localStorage.setItem('apologyTheme', 'light');
+                    this.themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                }
+            }
+
+            toggleHistoryPanel(show) {
+                if (show) {
+                    this.historyPanel.classList.add('active');
+                } else {
+                    this.historyPanel.classList.remove('active');
+                }
+            }
+
+            initTemplates() {
+                this.templates = {
+                    en: {
+                        formal: {
+                            opening: "Dear {recipient},",
+                            body: "I am writing to formally apologize for {mistake}. I understand that my actions were inappropriate and may have caused you inconvenience or distress. I take full responsibility for this situation and deeply regret any negative impact it may have had.",
+                            responsibility: "I acknowledge that {mistake} was entirely my fault, and I should have handled the situation more professionally.",
+                            improvement: "Moving forward, I am committed to ensuring that such incidents do not occur again. I will {improvement_action} to prevent similar situations in the future.",
+                            closing: "Once again, I sincerely apologize for my actions. I hope you can find it in your heart to forgive me.\n\nRespectfully yours,\n{sender}"
+                        },
+                        casual: {
+                            opening: "Hey {recipient},",
+                            body: "I wanted to reach out and apologize for {mistake}. I know it wasn't cool, and I'm really sorry about what happened. I definitely didn't mean for things to go down like that.",
+                            responsibility: "Look, I messed up with {mistake}, and I own that completely. No excuses from me.",
+                            improvement: "I'm gonna make sure this doesn't happen again. I'll {improvement_action} so we're all good going forward.",
+                            closing: "Thanks for being understanding, and sorry again for the whole thing.\n\nCheers,\n{sender}"
+                        },
+                        funny: {
+                            opening: "Dear {recipient},",
+                            body: "Well, this is awkward. I need to apologize for {mistake}. I realize now that my judgment was about as good as a chocolate teapot. Oops! 🤦‍♂️",
+                            responsibility: "I take full responsibility for {mistake} – and before you ask, no, I can't blame it on my evil twin or alien mind control (I checked).",
+                            improvement: "I promise to {improvement_action} and generally be less of a walking disaster. I've even considered getting a helmet for everyday activities.",
+                            closing: "Please forgive my temporary lapse in basic human functioning. I promise I'm usually more competent than this suggests.\n\nSorry (and slightly embarrassed),\n{sender}"
+                        },
+                        heartfelt: {
+                            opening: "Dearest {recipient},",
+                            body: "My heart is heavy as I write this apology for {mistake}. I am truly, deeply sorry for the pain and disappointment I have caused you. You mean so much to me, and knowing that I've hurt you is devastating.",
+                            responsibility: "I take complete ownership of {mistake}. There are no excuses for my behavior, and I am ashamed of how I handled the situation.",
+                            improvement: "I am committed to doing better. I will {improvement_action} because you deserve nothing less than my very best effort to make this right.",
+                            closing: "Please know that my apology comes from the deepest part of my heart. I hope that in time, you can forgive me and that we can rebuild the trust I've broken.\n\nWith sincere remorse and love,\n{sender}"
+                        }
+                    },
+                    es: {
+                        formal: {
+                            opening: "Estimado/a {recipient},",
+                            body: "Le escribo para disculparme formalmente por {mistake}. Entiendo que mis acciones fueron inapropiadas y pueden haberle causado inconvenientes o angustia. Asumo toda la responsabilidad por esta situación y lamento profundamente cualquier impacto negativo que pueda haber tenido.",
+                            responsibility: "Reconozco que {mistake} fue completamente mi culpa y que debería haber manejado la situación de manera más profesional.",
+                            improvement: "De ahora en adelante, me comprometo a garantizar que tales incidentes no vuelvan a ocurrir. Voy a {improvement_action} para prevenir situaciones similares en el futuro.",
+                            closing: "Una vez más, me disculpo sinceramente por mis acciones. Espero que pueda encontrar en su corazón perdonarme.\n\nAtentamente,\n{sender}"
+                        },
+                        casual: {
+                            opening: "Hola {recipient},",
+                            body: "Quería contactarte para disculparme por {mistake}. Sé que no estuvo bien, y realmente lamento lo que pasó. Definitivamente no quise que las cosas salieran así.",
+                            responsibility: "Mira, me equivoqué con {mistake}, y lo asumo completamente. Sin excusas de mi parte.",
+                            improvement: "Me aseguraré de que esto no vuelva a suceder. Voy a {improvement_action} para que todo vaya bien en el futuro.",
+                            closing: "Gracias por ser comprensivo/a, y lo siento de nuevo por todo.\n\nSaludos,\n{sender}"
+                        }
+                    },
+                    fr: {
+                        formal: {
+                            opening: "Cher {recipient},",
+                            body: "Je vous écris pour présenter mes excuses formelles pour {mistake}. Je comprends que mes actions étaient inappropriées et ont pu vous causer des inconvénients ou de la détresse. J'assume l'entière responsabilité de cette situation et je regrette profondément tout impact négatif que cela a pu avoir.",
+                            responsibility: "Je reconnais que {mistake} était entièrement de ma faute et que j'aurais dû gérer la situation de manière plus professionnelle.",
+                            improvement: "À l'avenir, je m'engage à faire en sorte que de tels incidents ne se reproduisent plus. Je vais {improvement_action} pour éviter des situations similaires à l'avenir.",
+                            closing: "Encore une fois, je m'excuse sincèrement pour mes actions. J'espère que vous pourrez trouver dans votre cœur de me pardonner.\n\nRespectueusement,\n{sender}"
+                        },
+                        casual: {
+                            opening: "Salut {recipient},",
+                            body: "Je voulais te contacter pour m'excuser pour {mistake}. Je sais que ce n'était pas cool, et je suis vraiment désolé pour ce qui s'est passé. Je ne voulais vraiment pas que les choses se passent comme ça.",
+                            responsibility: "Écoute, j'ai merdé avec {mistake}, et j'assume complètement. Pas d'excuses de ma part.",
+                            improvement: "Je vais m'assurer que ça ne se reproduise plus. Je vais {improvement_action} pour que tout aille bien à l'avenir.",
+                            closing: "Merci d'être compréhensif/ve, et encore désolé pour tout.\n\nCordialement,\n{sender}"
+                        }
+                    },
+                    de: {
+                        formal: {
+                            opening: "Sehr geehrte/r {recipient},",
+                            body: "Ich schreibe Ihnen, um mich formell für {mistake} zu entschuldigen. Ich verstehe, dass meine Handlungen unangemessen waren und Ihnen Unannehmlichkeiten oder Bedrängnis bereitet haben könnten. Ich übernehme die volle Verantwortung für diese Situation und bedauere zutiefst jegliche negative Auswirkungen, die dies gehabt haben könnte.",
+                            responsibility: "Ich erkenne an, dass {mistake} vollständig meine Schuld war und dass ich die Situation professioneller hätte handhaben sollen.",
+                            improvement: "In Zukunft bin ich bestrebt, sicherzustellen, dass solche Vorfälle nicht noch einmal vorkommen. Ich werde {improvement_action}, um ähnliche Situationen in Zukunft zu verhindern.",
+                            closing: "Noch einmal entschuldige ich mich aufrichtig für meine Handlungen. Ich hoffe, Sie können in Ihrem Herzen verzeihen.\n\nHochachtungsvoll,\n{sender}"
+                        },
+                        casual: {
+                            opening: "Hallo {recipient},",
+                            body: "Ich wollte mich bei dir für {mistake} entschuldigen. Ich weiß, dass es nicht cool war, und es tut mir wirklich leid, was passiert ist. Ich wollte definitiv nicht, dass die Dinge so laufen.",
+                            responsibility: "Schau, ich habe mit {mistake} Mist gebaut und das übernehme ich voll und ganz. Keine Ausreden von mir.",
+                            improvement: "Ich werde sicherstellen, dass das nicht noch einmal passiert. Ich werde {improvement_action}, damit in Zukunft alles gut läuft.",
+                            closing: "Danke für dein Verständnis und nochmal sorry für alles.\n\nViele Grüße,\n{sender}"
+                        }
+                    },
+                    it: {
+                        formal: {
+                            opening: "Gentile {recipient},",
+                            body: "Le scrivo per scusarmi formalmente per {mistake}. Capisco che le mie azioni siano state inappropriate e possano averle causato disagio o angoscia. Mi assumo piena responsabilità per questa situazione e profondamente mi dispiace per qualsiasi impatto negativo possa aver avuto.",
+                            responsibility: "Riconosco che {mistake} è stata interamente colpa mia e che avrei dovuto gestire la situazione in modo più professionale.",
+                            improvement: "Andando avanti, mi impegno a garantire che tali incidenti non si ripetano. {improvement_action} per prevenire situazioni simili in futuro.",
+                            closing: "Ancora una volta, mi scuso sinceramente per le mie azioni. Spero che nel suo cuore possa trovare il modo di perdonarmi.\n\nCordiali saluti,\n{sender}"
+                        },
+                        casual: {
+                            opening: "Ciao {recipient},",
+                            body: "Volevo contattarti per scusarmi per {mistake}. So che non è stato bello e mi dispiace davvero per quello che è successo. Non volevo assolutamente che le cose andassero così.",
+                            responsibility: "Senti, ho sbagliato con {mistake} e me ne assumo completamente la responsabilità. Nessuna scusa da parte mia.",
+                            improvement: "Mi assicurerò che non accada più. {improvement_action} in modo che in futuro vada tutto bene.",
+                            closing: "Grazie per la comprensione, e scusa ancora per tutto.\n\nSaluti,\n{sender}"
+                        }
+                    }
+                };
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                const formData = this.getFormData();
+                if (!this.validateForm(formData)) {
+                    return;
+                }
+
+                this.showLoading();
+                
+                // Simulate AI processing time with a more realistic delay
+                await new Promise(resolve => setTimeout(resolve, 1500 + Math.random() * 1000));
+                
+                const apology = this.generateApology(formData);
+                this.displayApology(apology, formData);
+                this.updateStats(apology);
+                this.showActionButtons();
+                this.addToHistory(apology, formData);
+            }
+
+            getFormData() {
+                return {
+                    recipient: document.getElementById('recipientName').value.trim(),
+                    sender: document.getElementById('senderName').value.trim(),
+                    mistake: document.getElementById('mistake').value.trim(),
+                    tone: document.querySelector('input[name="tone"]:checked').value,
+                    language: document.getElementById('language').value,
+                    includeGift: document.getElementById('includeGift').checked,
+                    urgentFlag: document.getElementById('urgentFlag').checked,
+                    takeFullResponsibility: document.getElementById('takeFullResponsibility').checked,
+                    includeTimeline: document.getElementById('includeTimeline').checked
+                };
+            }
+
+            validateForm(formData) {
+                if (!formData.recipient || !formData.sender || !formData.mistake) {
+                    this.showNotification('Please fill in all required fields', 'error');
+                    return false;
+                }
+                return true;
+            }
+
+            generateApology(data) {
+                const lang = data.language || 'en';
+                const template = this.templates[lang][data.tone] || this.templates.en[data.tone];
+                let apology = '';
+
+                // Opening
+                apology += template.opening.replace('{recipient}', data.recipient) + '\n\n';
+
+                // Main body with urgency modifier
+                let body = template.body.replace('{mistake}', data.mistake);
+                if (data.urgentFlag) {
+                    const urgencyPhrases = [
+                        "I need to address this matter urgently. ",
+                        "This requires immediate attention. ",
+                        "I wanted to reach out right away regarding ",
+                        "This is a time-sensitive matter that I must address. "
+                    ];
+                    body = urgencyPhrases[Math.floor(Math.random() * urgencyPhrases.length)] + body;
+                }
+                apology += body + '\n\n';
+
+                // Responsibility section
+                if (data.takeFullResponsibility) {
+                    apology += template.responsibility.replace('{mistake}', data.mistake) + '\n\n';
+                }
+
+                // Improvement section
+                const improvementAction = this.generateImprovementAction(data);
+                apology += template.improvement.replace('{improvement_action}', improvementAction) + '\n\n';
+
+                // Gift/amends section
+                if (data.includeGift) {
+                    apology += this.generateAmendsSection(data.tone, data.language) + '\n\n';
+                }
+
+                // Timeline section
+                if (data.includeTimeline) {
+                    apology += this.generateTimelineSection(data.tone, data.language) + '\n\n';
+                }
+
+                // Closing
+                apology += template.closing.replace('{sender}', data.sender).replace('{recipient}', data.recipient);
+
+                return apology;
+            }
+
+            generateImprovementAction(data) {
+                const actions = {
+                    formal: ['implement better processes', 'establish clearer protocols', 'undergo additional training', 'create preventive measures'],
+                    casual: ['be more careful next time', 'double-check everything', 'learn from this mistake', 'do better'],
+                    funny: ['consult my common sense more often', 'hire a personal life coach', 'practice basic adulting', 'think before I act'],
+                    heartfelt: ['commit to personal growth', 'work on myself every day', 'prove my dedication to change', 'earn back your trust']
+                };
+                
+                const toneActions = actions[data.tone] || actions.formal;
+                return toneActions[Math.floor(Math.random() * toneActions.length)];
+            }
+
+            generateAmendsSection(tone, lang = 'en') {
+                const amendsText = {
+                    en: {
+                        formal: "I would like to discuss how I might make amends for this situation and demonstrate my commitment to rebuilding your trust.",
+                        casual: "I'd love to make it up to you somehow – maybe grab coffee or do something nice to show I'm really sorry.",
+                        funny: "I'm prepared to make amends – whether that's buying you coffee, doing your chores, or performing an interpretive dance of regret.",
+                        heartfelt: "I want to make this right in whatever way possible. Please tell me how I can begin to earn your forgiveness."
+                    },
+                    es: {
+                        formal: "Me gustaría discutir cómo podría compensar esta situación y demostrar mi compromiso para reconstruir su confianza.",
+                        casual: "Me encantaría compensarte de alguna manera, tal vez tomar un café o hacer algo bonito para mostrar que lo siento de verdad."
+                    },
+                    fr: {
+                        formal: "Je souhaiterais discuter de la façon dont je pourrais réparer cette situation et démontrer mon engagement à reconstruire votre confiance.",
+                        casual: "J'aimerais me rattraper d'une manière ou d'une autre - peut-être prendre un café ou faire quelque chose de sympa pour montrer que je suis vraiment désolé."
+                    },
+                    de: {
+                        formal: "Ich möchte besprechen, wie ich diese Situation wiedergutmachen und mein Engagement für den Wiederaufbau Ihres Vertrauens demonstrieren kann.",
+                        casual: "Ich würde es gerne irgendwie wiedergutmachen – vielleicht einen Kaffee trinken oder etwas Nettes tun, um zu zeigen, dass es mir wirklich leid tut."
+                    },
+                    it: {
+                        formal: "Vorrei discutere di come potrei rimediare a questa situazione e dimostrare il mio impegno per ricostruire la tua fiducia.",
+                        casual: "Mi piacerebbe rimediare in qualche modo - magari prendere un caffè o fare qualcosa di carino per dimostrare che mi dispiace davvero."
+                    }
+                };
+                
+                const langText = amendsText[lang] || amendsText.en;
+                return langText[tone] || langText.formal;
+            }
+
+            generateTimelineSection(tone, lang = 'en') {
+                const timelineText = {
+                    en: {
+                        formal: "I commit to demonstrating measurable improvement within the next 30 days and will provide regular updates on my progress.",
+                        casual: "I'm gonna start working on this right away – you should see changes pretty much immediately.",
+                        funny: "My rehabilitation program starts Monday (or whenever I finish this bag of chips and find my motivation).",
+                        heartfelt: "Starting today, I will work tirelessly to become the person you deserve to have in your life."
+                    },
+                    es: {
+                        formal: "Me comprometo a demostrar una mejora medible dentro de los próximos 30 días y proporcionaré actualizaciones periódicas sobre mi progreso.",
+                        casual: "Voy a empezar a trabajar en esto de inmediato; deberías ver cambios prácticamente de inmediato."
+                    },
+                    fr: {
+                        formal: "Je m'engage à démontrer une amélioration mesurable dans les 30 prochains jours et je fournirai des mises à jour régulières sur mes progrès.",
+                        casual: "Je vais commencer à travailler là-dessus tout de suite - tu devrais voir des changements presque immédiatement."
+                    },
+                    de: {
+                        formal: "Ich verpflichte mich, innerhalb der nächsten 30 Tage eine messbare Verbesserung zu demonstrieren und werde regelmäßige Updates zu meinen Fortschritten geben.",
+                        casual: "Ich werde sofort daran arbeiten – du solltest fast sofort Veränderungen sehen."
+                    },
+                    it: {
+                        formal: "Mi impegno a dimostrare un miglioramento misurabile entro i prossimi 30 giorni e fornirò aggiornamenti regolari sui miei progressi.",
+                        casual: "Inizierò a lavorarci subito: dovresti vedere cambiamenti praticamente immediati."
+                    }
+                };
+                
+                const langText = timelineText[lang] || timelineText.en;
+                return langText[tone] || langText.formal;
+            }
+
+            showLoading() {
+                this.generateBtn.innerHTML = '<div class="loading"></div> Generating...';
+                this.generateBtn.disabled = true;
+                
+                // Show AI thinking animation
+                this.output.innerHTML = `
+                    <div class="ai-thinking">
+                        <i class="fas fa-brain" style="font-size: 3rem;"></i>
+                        <p>Our AI is crafting your perfect apology...</p>
+                        <div class="ai-dots">
+                            <div class="ai-dot"></div>
+                            <div class="ai-dot"></div>
+                            <div class="ai-dot"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            displayApology(apology, formData) {
+                this.output.innerHTML = apology;
+                this.output.classList.add('bounce-in');
+                this.generateBtn.innerHTML = '<i class="fas fa-magic"></i> Generate Apology';
+                this.generateBtn.disabled = false;
+            }
+
+            updateStats(text) {
+                const words = text.split(/\s+/).filter(word => word.length > 0).length;
+                const chars = text.length;
+                const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+                const readingTime = Math.ceil(words / 200); // Average reading speed
+
+                document.getElementById('wordCount').textContent = words;
+                document.getElementById('charCount').textContent = chars;
+                document.getElementById('sentenceCount').textContent = sentences;
+                document.getElementById('readingTime').textContent = readingTime;
+            }
+
+            showActionButtons() {
+                this.copyBtn.style.display = 'inline-block';
+                this.downloadBtn.style.display = 'inline-block';
+                this.voiceBtn.style.display = 'inline-block';
+            }
+
+            async copyToClipboard() {
+                try {
+                    await navigator.clipboard.writeText(this.output.textContent);
+                    this.showNotification('Apology copied to clipboard!');
+                } catch (err) {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = this.output.textContent;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    this.showNotification('Apology copied to clipboard!');
+                }
+            }
+
+            downloadApology() {
+                const text = this.output.textContent;
+                const blob = new Blob([text], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'apology-letter.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                this.showNotification('Apology downloaded!');
+            }
+
+            toggleVoice() {
+                if (this.isSpeaking) {
+                    this.synth.cancel();
+                    this.isSpeaking = false;
+                    this.voiceBtn.innerHTML = '<i class="fas fa-volume-up"></i> <span>Listen</span>';
+                    return;
+                }
+
+                const text = this.output.textContent;
+                if (!text) return;
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                
+                // Set voice based on selected language
+                const lang = document.getElementById('language').value;
+                const voices = this.synth.getVoices();
+                const langVoiceMap = {
+                    en: ['en-US', 'en-GB'],
+                    es: ['es-ES', 'es-MX'],
+                    fr: ['fr-FR'],
+                    de: ['de-DE'],
+                    it: ['it-IT']
+                };
+                
+                const preferredVoices = langVoiceMap[lang] || ['en-US'];
+                const voice = voices.find(v => preferredVoices.some(l => v.lang.includes(l))) || voices[0];
+                
+                if (voice) {
+                    utterance.voice = voice;
+                }
+                
+                this.synth.speak(utterance);
+                this.isSpeaking = true;
+                this.voiceBtn.innerHTML = '<i class="fas fa-stop"></i> <span>Stop</span>';
+                
+                utterance.onend = () => {
+                    this.isSpeaking = false;
+                    this.voiceBtn.innerHTML = '<i class="fas fa-volume-up"></i> <span>Listen</span>';
+                };
+            }
+
+            showNotification(message, type = 'success') {
+                this.notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> <span>${message}</span>`;
+                this.notification.className = `notification ${type}`;
+                this.notification.classList.add('show');
+                
+                setTimeout(() => {
+                    this.notification.classList.remove('show');
+                }, 3000);
+            }
+
+            addToHistory(apology, formData) {
+                const historyItem = {
+                    id: Date.now(),
+                    apology: apology,
+                    recipient: formData.recipient,
+                    sender: formData.sender,
+                    tone: formData.tone,
+                    language: formData.language,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Load existing history
+                this.history = JSON.parse(localStorage.getItem('apologyHistory') || '[]');
+                
+                // Add new item to the beginning
+                this.history.unshift(historyItem);
+                
+                // Limit to max items
+                if (this.history.length > this.maxHistoryItems) {
+                    this.history.pop();
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('apologyHistory', JSON.stringify(this.history));
+                
+                // Update the UI
+                this.renderHistory();
+            }
+
+            loadHistory() {
+                this.history = JSON.parse(localStorage.getItem('apologyHistory') || '[]');
+                this.renderHistory();
+            }
+
+            renderHistory() {
+                if (this.history.length === 0) {
+                    this.historyList.innerHTML = '<div class="empty-history">No apologies generated yet</div>';
+                    return;
+                }
+                
+                this.historyList.innerHTML = '';
+                
+                this.history.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `
+                        <div class="history-item-title">
+                            <span>To: ${item.recipient}</span>
+                            <span>${this.formatTone(item.tone)}</span>
+                        </div>
+                        <div class="history-item-content">${item.apology.substring(0, 100)}...</div>
+                        <div class="history-item-time">${this.formatDate(item.timestamp)}</div>
+                    `;
+                    
+                    historyItem.addEventListener('click', () => {
+                        this.output.innerHTML = item.apology;
+                        this.showActionButtons();
+                        this.updateStats(item.apology);
+                        this.toggleHistoryPanel(false);
+                        this.showNotification('Apology restored from history');
+                    });
+                    
+                    this.historyList.appendChild(historyItem);
+                });
+            }
+
+            formatTone(tone) {
+                const tones = {
+                    formal: 'Formal',
+                    casual: 'Casual',
+                    funny: 'Humorous',
+                    heartfelt: 'Heartfelt'
+                };
+                return tones[tone] || tone;
+            }
+
+            formatDate(timestamp) {
+                const date = new Date(timestamp);
+                return date.toLocaleString();
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            const generator = new ApologyGenerator();
+            
+            // Add bounce-in animation for UI elements
+            setTimeout(() => {
+                document.querySelectorAll('.input-panel, .output-panel, .stats-panel').forEach(el => {
+                    el.classList.add('bounce-in');
+                });
+            }, 300);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case 'Enter':
+                            e.preventDefault();
+                            document.getElementById('generateBtn').click();
+                            break;
+                        case 'c':
+                            if (document.getElementById('copyBtn').style.display !== 'none') {
+                                e.preventDefault();
+                                document.getElementById('copyBtn').click();
+                            }
+                            break;
+                        case 'h':
+                            e.preventDefault();
+                            document.getElementById('historyToggle').click();
+                            break;
+                    }
+                }
+                
+                if (e.key === 'Escape') {
+                    document.getElementById('closeHistory').click();
+                }
+            });
+            
+            console.log('🎉 Apology Generator Pro initialized successfully!');
+        });
+    </script>
+</body>
+</html>
